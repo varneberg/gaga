@@ -12,7 +12,7 @@ on:
     
 
 env:
-  golang_version: '1.18.1'
+  golang_version: '1.17.8'
 
 
 jobs:
