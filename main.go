@@ -10,7 +10,7 @@ import (
 
 
 func main() {
-	token := os.Getenv("$GTIHUB_TOKEN")
+	token := os.Getenv("GTIHUB_TOKEN")
 	//ctx := context.Background()
 	if token == ""{
 		log.Fatal("Unauthorized: No token present")
