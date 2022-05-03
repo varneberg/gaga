@@ -12,7 +12,17 @@ on:
     - main
     paths-ignore:
       - '**.md'
-    
+
+permissions:   
+  id-token: write
+  contents: write    # This is required for actions/checkout@v3
+  issues: write
+  pull-requests: write
+  repository-projects: write
+
+env:
+  golang_version: '1.16.1'
+
 
 jobs:
   hello: 
@@ -20,7 +30,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps: 
-     
     - name: Checkout
       uses: actions/checkout@v3
-      run: echo "Hello World"
+
+    # Set up golang in env
+    - uses: actions/setup-go@v3
+      with:
+        go-version: ${{ env.golang_version }} # The Go version to download (if necessary) and use.
+    - run: go version
