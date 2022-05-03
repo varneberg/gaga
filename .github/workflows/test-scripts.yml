@@ -12,7 +12,13 @@ on:
     - main
     paths-ignore:
       - '**.md'
-    
+
+permissions:   
+  id-token: write
+  contents: write    # This is required for actions/checkout@v3
+  issues: write
+  pull-requests: write
+  repository-projects: write
 
 jobs:
   hello: 
