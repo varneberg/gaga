@@ -11,7 +11,6 @@ on:
     - main
     paths-ignore:
       - '**.md'
-    types: [opened]
   issues:
     types: [opened]
 
@@ -45,3 +44,10 @@ jobs:
       uses: andymckay/labeler@master
       with:
         add-labels: "test"
+    - uses: actions/github-script@v6
+      id: set-result
+      with:
+        script: return "Hello!"
+        result-encoding: string
+    - name: Get result
+      run: echo "${{steps.set-result.outputs.result}}"
