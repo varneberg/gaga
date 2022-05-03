@@ -1,7 +1,6 @@
 name: 'Test Scripts'
 
 on:
-  workflow_dispatch:
   push:
     branches:
     - main
@@ -12,6 +11,8 @@ on:
     - main
     paths-ignore:
       - '**.md'
+  issues:
+    types: [opened]
 
 permissions:   
   id-token: write
@@ -25,7 +26,7 @@ env:
 
 
 jobs:
-  hello: 
+  golang: 
     if: github.event.name == 'pull_request'
     runs-on: ubuntu-latest
 
@@ -38,3 +39,8 @@ jobs:
       with:
         go-version: ${{ env.golang_version }} # The Go version to download (if necessary) and use.
     - run: go version
+
+    - name: initial labeling
+      uses: andymckay/labeler@master
+      with:
+        add-labels: "test"
