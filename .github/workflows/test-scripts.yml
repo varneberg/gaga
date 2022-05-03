@@ -1,40 +1,34 @@
-name: 'Test Scripts'
+name: Test Scripts
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-    - main
-    paths-ignore:
-      - '**.md'
+    branches: [ main ]
   pull_request:
-    branches:
-    - main
-    paths-ignore:
-      - '**.md'
-
-permissions:   
-  id-token: write
-  contents: write    # This is required for actions/checkout@v3
-  issues: write
-  pull-requests: write
-  repository-projects: write
+    branches: [ main ]
+  issues:
+    types: [opened]
+  
+  workflow_dispatch:
+    
 
 env:
   golang_version: '1.16.1'
 
 
 jobs:
-  hello: 
-    if: github.event.name == 'pull_request'
+  golang: 
     runs-on: ubuntu-latest
 
     steps: 
-    - name: Checkout
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
     # Set up golang in env
-    - uses: actions/setup-go@v3
-      with:
-        go-version: ${{ env.golang_version }} # The Go version to download (if necessary) and use.
-    - run: go version
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.golang_version }} # The Go version to download (if necessary) and use.
+      - run: go version
+
+      # - name: initial labeling
+      #   uses: andymckay/labeler@master
+      #   with:
+      #     add-labels: "test"
