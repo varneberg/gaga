@@ -20,17 +20,21 @@ permissions:
   pull-requests: write
   repository-projects: write
 
+env:
+  golang_version: '1.16.1'
+
+
 jobs:
   hello: 
     if: github.event.name == 'pull_request'
     runs-on: ubuntu-latest
 
     steps: 
-     
     - name: Checkout
-      id: Checkout
       uses: actions/checkout@v3
 
-    - name: Hello
-      id: Hello
-      run: echo "Hello World"
+    # Set up golang in env
+    - uses: actions/setup-go@v3
+      with:
+        go-version: ${{ env.golang_version }} # The Go version to download (if necessary) and use.
+    - run: go version
