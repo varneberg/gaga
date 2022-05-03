@@ -1,18 +1,19 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
-
 )
 
 
 func main() {
-	token := os.Getenv("GTIHUB_TOKEN")
-	repo := os.Getenv("GITHUB_REPOSITORY_NAME")
-	owner := os.Getenv("GITHUB_REPOSITY_NAME")
-	fmt.Printf("Github Token:",token)
+	token := os.Getenv("$GTIHUB_TOKEN")
+	ctx := context.Background()
+	if token == ""{
+		log.Fatal("Unauthorized: No token present")
+	}
 }
