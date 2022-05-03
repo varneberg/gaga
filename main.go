@@ -2,12 +2,15 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
-	"github.com/google/go-github/github"
-	"golang.org/x/oauth2"
-	"context"
 )
 
+
 func main() {
-	token := os.Getenv()	
+	token := os.Getenv("GTIHUB_AUTH_TOKEN")
+	if token == "" {
+		log.Fatal("Error: No Github token present")
+	}
+	fmt.Printf(token)
 }

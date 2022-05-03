@@ -26,7 +26,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ env.golang_version }} # The Go version to download (if necessary) and use.
-      - run: go run github/token.go
+      - run: go run main.go
 
       # - name: initial labeling
       #   uses: andymckay/labeler@master
