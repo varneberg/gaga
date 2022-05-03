@@ -1,0 +1,26 @@
+name: 'Test Scripts'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+    - main
+    paths-ignore:
+      - '**.md'
+    
+
+jobs:
+  hello: 
+    if: github.event.name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps: 
+     
+    - name: Checkout
+      uses: actions/checkout@v3
+      run: echo "Hello World"
