@@ -20,22 +20,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps: 
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
     # Set up golang in env
-    - uses: actions/setup-go@v3
-      with:
-        go-version: ${{ env.golang_version }} # The Go version to download (if necessary) and use.
-    - run: go version
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.golang_version }} # The Go version to download (if necessary) and use.
+      - run: go version
 
-    - name: initial labeling
-      uses: andymckay/labeler@master
-      with:
-        add-labels: "test"
-    - uses: actions/github-script@v6
-      id: set-result
-      with:
-        script: return "Hello!"
-        result-encoding: string
-    - name: Get result
-      run: echo "${{steps.set-result.outputs.result}}"
+      # - name: initial labeling
+      #   uses: andymckay/labeler@master
+      #   with:
+      #     add-labels: "test"
