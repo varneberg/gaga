@@ -29,10 +29,13 @@ jobs:
           sudo tar -C /usr/local/ -xzf go${{ env.golang_version }}.linux-amd64.tar.gz
           export PATH=$PATH:/usr/local/go/bin
 
-      - name: go
+      - name: go version
         run: go version
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: main.go
+        run: go run main.go
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: initial labeling
       #   uses: andymckay/labeler@master
