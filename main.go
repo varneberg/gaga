@@ -8,7 +8,7 @@ import (
 
 
 func main() {
-	token := os.Getenv("GTIHUB_AUTH_TOKEN")
+	token := os.Getenv("GTIHUB_TOKEN")
 	if token == "" {
 		log.Fatal("Error: No Github token present")
 	}
