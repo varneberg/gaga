@@ -11,6 +11,13 @@ on:
   workflow_dispatch:
     
 
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+  issues: write
+  
+
 env:
   golang_version: '1.17.8'
 
