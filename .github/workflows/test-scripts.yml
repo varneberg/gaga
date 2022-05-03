@@ -2,24 +2,14 @@ name: 'Test Scripts'
 
 on:
   push:
-    branches:
-    - main
-    paths-ignore:
-      - '**.md'
+    branches: [ main ]
   pull_request:
-    branches:
-    - main
-    paths-ignore:
-      - '**.md'
+    branches: [ main ]
   issues:
     types: [opened]
-
-permissions:   
-  id-token: write
-  contents: write    # This is required for actions/checkout@v3
-  issues: write
-  pull-requests: write
-  repository-projects: write
+  
+  workflow_dispatch:
+    
 
 env:
   golang_version: '1.16.1'
@@ -31,8 +21,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps: 
-    - name: Checkout
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
     # Set up golang in env
     - uses: actions/setup-go@v3
