@@ -15,5 +15,7 @@ func main() {
 	ctx := context.Background()
 	if token == ""{
 		log.Fatal("Unauthorized: No token present")
+	} else {
+		fmt.Println("Success: Token aquired!")
 	}
 }
