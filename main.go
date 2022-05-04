@@ -4,20 +4,40 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
-	"github.com/google/go-github/github"
+	"syscall"
+
+	"github.com/google/go-github/v44/github"
+	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/oauth2"
 )
 
-
 func main() {
-	ctx := context.Background()
-	token := os.Getenv("GTIHUB_TOKEN")
+	fmt.Print("GitHub Token: ")
+	byteToken, _ := terminal.ReadPassword(int(syscall.Stdin))
+	println()
+	token := string(byteToken)
 
-	
-	if token == ""{
-		log.Fatal("Unauthorized: No token present")
-	} else {
-		fmt.Println("Success: Token aquired!")
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+
+	client := github.NewClient(tc)
+
+	user, resp, err := client.Users.Get(ctx, "")
+	if err != nil {
+		fmt.Printf("\nerror: %v\n", err)
+		return
 	}
+
+	// Rate.Limit should most likely be 5000 when authorized.
+	log.Printf("Rate: %#v\n", resp.Rate)
+
+	// If a Token Expiration has been set, it will be displayed.
+	if !resp.TokenExpiration.IsZero() {
+		log.Printf("Token Expiration: %v\n", resp.TokenExpiration)
+	}
+
+	fmt.Printf("\n%v\n", github.Stringify(user))
 }
