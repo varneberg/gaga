@@ -67,7 +67,8 @@ func auth() {
 
 	// request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
 	request, err := http.NewRequest("POST", url, nil)
-	request.Header.Add("Authorization", fmt.Sprintf("token %d", ghToken))
+	request.Header.Add("Accept", "application/vnd.github.v3+json")
+	request.Header.Add("Authorization", "token "+ghToken)
 	request.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		log.Fatalln(err)
