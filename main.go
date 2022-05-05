@@ -17,7 +17,7 @@ var ghEventName = os.Getenv("GITHUB_EVENT_NAME")
 var ghActor = os.Getenv("GITHUB_ACTOR")
 var ghWorkflow = os.Getenv("GITHUB_WORKFLOW")
 var ghActionsIDTokenRequestURL=os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
-var ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+var ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN") // Github Token!
 
 
 func listEnv() {
