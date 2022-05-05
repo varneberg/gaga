@@ -14,7 +14,7 @@ import (
 
 var ghRepoOwner = os.Getenv("GITHUB_REPOSITORY_OWNER")
 var ghRef = os.Getenv("GITHUB_REF")
-var ghRefName = os.Getenv("GITHUB_RE_NAME")
+var ghRefName = os.Getenv("GITHUB_REF_NAME")
 var ghRepo = os.Getenv("GITHUB_REPOSITORY")
 var ghToken = os.Getenv("GITHUB_TOKEN")
 var ghEvent = os.Getenv("GITHUB_EVENT_NAME")
