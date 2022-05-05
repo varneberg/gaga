@@ -15,8 +15,9 @@ import (
 func main() {
 	//fmt.Print("GitHub Token: ")
 
-	env := os.Environ()
-	fmt.Println(env)
+	for _, env := range os.Environ() {
+		fmt.Println(env)
+	}
 	// byteToken, _ := term.ReadPassword(int(syscall.Stdin))
 	// println()
 	// token := string(byteToken)
