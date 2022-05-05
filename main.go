@@ -48,7 +48,7 @@ func auth() {
 	}
 
 	requestBody, err := json.Marshal(map[string]string{
-		"labels": "test",
+		"labels": `["test"]`,
 	})
 	if err != nil {log.Fatalln(err)}
 
