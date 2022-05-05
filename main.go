@@ -52,8 +52,8 @@ func auth() {
 	})
 	if err != nil {log.Fatalln(err)}
 
-	prNumber := strings.Split(ghRefName, "/")[0]
-	url := ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
+	// prNumber := strings.Split(ghRefName, "/")[0]
+	url := ghAPIURL + "/repos/" + ghRepo //+ "/issues/" + prNumber + "/labels"
 	fmt.Println("URL: ", url)
 
 	timeout := time.Duration(5 * time.Second)
