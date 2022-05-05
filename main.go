@@ -3,8 +3,8 @@ package main
 import (
 	// "bytes"
 	// "encoding/json"
-	"bytes"
-	"encoding/json"
+	// "bytes"
+	// "encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -13,7 +13,7 @@ import (
 	// "log"
 	"net/http"
 	"os"
-	"strings"
+	// "strings"
 )
 
 var ghRepoOwner = os.Getenv("GITHUB_REPOSITORY_OWNER")
@@ -44,13 +44,17 @@ func listEnv() {
 }
 
 func auth() {
-	if ghEvent != "pull_request" {fmt.Println("Error: Not a pull request")}
-	if ghRefName == "" {fmt.Println("Error: Github Reference Name not available")}
+	if ghEvent != "pull_request" {
+		fmt.Println("Error: Not a pull request")
+	}
+	if ghRefName == "" {
+		fmt.Println("Error: Github Reference Name not available")
+	}
 
-	requestBody, err := json.Marshal(map[string]string{
-		"labels": "test",
-	})
-	if err != nil {log.Fatalln(err)}
+	// requestBody, err := json.Marshal(map[string]string{
+	// 	"labels": "test",
+	// })
+	// if err != nil {log.Fatalln(err)}
 
 	// prNumber := strings.Split(ghRefName, "/")[0]
 	url := ghAPIURL + "/repos/" + ghRepo //+ "/issues/" + prNumber + "/labels"
@@ -61,18 +65,25 @@ func auth() {
 		Timeout: timeout,
 	}
 
-	request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	// request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	request, err := http.NewRequest("POST", url, nil)
 	request.Header.Add("Authorization", fmt.Sprintf("token %d", ghToken))
 	request.Header.Set("Content-Type", "application/json")
-	if err != nil {log.Fatalln(err)}
-	
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	resp, err := client.Do(request)
-	if err != nil {log.Fatalln(err)}
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {log.Fatalln(err)}
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	log.Println(string(body))
 	// req, err := http.NewRequest("POST", url, nil)
