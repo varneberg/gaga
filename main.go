@@ -1,13 +1,13 @@
 package main
 
 import (
-	// "context"
+	"context"
 	"fmt"
-
-	// "log"
+	"log"
 	"os"
-	// "syscall"
-	// "golang.org/x/term"
+
+	"github.com/google/go-github/github"
+	"golang.org/x/oauth2"
 )
 
 var ghRef = os.Getenv("GITHUB_REF")
@@ -17,7 +17,7 @@ var ghEventName = os.Getenv("GITHUB_EVENT_NAME")
 var ghActor = os.Getenv("GITHUB_ACTOR")
 var ghWorkflow = os.Getenv("GITHUB_WORKFLOW")
 var ghActionsIDTokenRequestURL=os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
-var ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN") // Github Token!
+var ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
 
 
 func listEnv() {
@@ -30,6 +30,29 @@ func listEnv() {
 	fmt.Println("Github Actions Token Request URL: ",ghActionsIDTokenRequestURL)
 	fmt.Println("Github Actions Request Token: ",ghActionsIDTokenRequestToken)
 	fmt.Printf("-----------------------\n")
+}
+
+func auth(){
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: ghToken},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+
+	client := github.NewClient(tc)
+	user, resp, err := client.Users.Get(ctx, "")
+	if err != nil {
+		fmt.Printf("\nerror: %v\n", err)
+		return
+	}
+
+	// Rate.Limit should most likely be 5000 when authorized.
+	log.Printf("Rate: %#v\n", resp.Rate)
+
+	// If a Token Expiration has been set, it will be displayed.
+
+	fmt.Printf("\n%v\n", github.Stringify(user))
+
 }
 
 func main() {
