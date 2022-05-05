@@ -68,18 +68,23 @@ func NewClient() (*Client, error) {
 			return &Client{}, errors.New("failed to create a new github api client")
 		}
 	} 
-
 	c := &Client{
 		Config: cfg,
 		Client: client,
 	}
-
-
 	return c, nil
+}
 
+func listEnv() {
+	for _, env := range os.Environ() {
+		fmt.Println(env)
+	}
+	fmt.Printf("-----------------------\n")
 }
 
 func main() {
+	listEnv()
+	fmt.Println()
 	NewClient()
 }
 // func main() {

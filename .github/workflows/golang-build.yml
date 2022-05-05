@@ -31,9 +31,9 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: '^${{ env.golang_version }}' # The Go version to download (if necessary) and use.
-      - run:  go run main.go
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - run:  go run main.go
 
     # Set up golang in env
       # - name: Setup go
