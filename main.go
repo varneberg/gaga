@@ -39,7 +39,14 @@ func listEnv() {
 	fmt.Printf("-----------------------\n")
 }
 
+func inputLabels() ([]string){
+	input := os.Args[1:]
+	// fmt.Println(input)
+	return input
+}
+
 func auth() {
+	inputLabels()
 	if ghEvent != "pull_request" {
 		fmt.Println("Error: Not a pull request")
 	}
@@ -47,7 +54,8 @@ func auth() {
 		fmt.Println("Error: Github Reference Name not available")
 	}
 
-	labels := []string{"test", "test2"}
+	// labels := []string{"test", "test2"}
+	labels := inputLabels()
 
 	requestBody, err := json.Marshal(map[string][]string{
 		"labels": labels,
