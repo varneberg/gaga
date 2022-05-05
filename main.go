@@ -58,6 +58,7 @@ func auth(){
 func main() {
 	listEnv()
 	fmt.Println()
+	auth()
 }
 // func main() {
 	//fmt.Print("GitHub Token: ")
