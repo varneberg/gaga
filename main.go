@@ -1,43 +1,47 @@
 package main
 
 import (
-	"context"
+	// "context"
 	"fmt"
-	"log"
-	"syscall"
+	// "log"
+	"os"
+	// "syscall"
 
-	"github.com/google/go-github/v44/github"
-	"golang.org/x/term"
-	"golang.org/x/oauth2"
+	// "github.com/google/go-github/v44/github"
+	// "golang.org/x/oauth2"
+	// "golang.org/x/term"
 )
 
 func main() {
-	fmt.Print("GitHub Token: ")
-	byteToken, _ := term.ReadPassword(int(syscall.Stdin))
-	println()
-	token := string(byteToken)
+	//fmt.Print("GitHub Token: ")
 
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: token},
-	)
-	tc := oauth2.NewClient(ctx, ts)
+	env := os.Environ()
+	fmt.Println(env)
+	// byteToken, _ := term.ReadPassword(int(syscall.Stdin))
+	// println()
+	// token := string(byteToken)
 
-	client := github.NewClient(tc)
+	// ctx := context.Background()
+	// ts := oauth2.StaticTokenSource(
+	// 	&oauth2.Token{AccessToken: token},
+	// )
+	// tc := oauth2.NewClient(ctx, ts)
 
-	user, resp, err := client.Users.Get(ctx, "")
-	if err != nil {
-		fmt.Printf("\nerror: %v\n", err)
-		return
-	}
+	// client := github.NewClient(tc)
 
-	// Rate.Limit should most likely be 5000 when authorized.
-	log.Printf("Rate: %#v\n", resp.Rate)
+	// user, resp, err := client.Users.Get(ctx, "")
+	// if err != nil {
+	// 	fmt.Printf("\nerror: %v\n", err)
+	// 	return
+	// }
 
-	// If a Token Expiration has been set, it will be displayed.
-	if !resp.TokenExpiration.IsZero() {
-		log.Printf("Token Expiration: %v\n", resp.TokenExpiration)
-	}
+	// // Rate.Limit should most likely be 5000 when authorized.
+	// log.Printf("Rate: %#v\n", resp.Rate)
 
-	fmt.Printf("\n%v\n", github.Stringify(user))
+	// // If a Token Expiration has been set, it will be displayed.
+	// if !resp.TokenExpiration.IsZero() {
+	// 	log.Printf("Token Expiration: %v\n", resp.TokenExpiration)
+	// }
+
+	// fmt.Printf("\n%v\n", github.Stringify(user))
 }
