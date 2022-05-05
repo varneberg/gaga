@@ -28,28 +28,27 @@ jobs:
 
     steps: 
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
-        with:
-          go-version: '^${{ env.golang_version }}' # The Go version to download (if necessary) and use.
-        # env:
-        #   GITHUB_TOKEN: ${{ github.token }}
-      - run:  go run main.go
+      # - uses: actions/setup-go@v3
+      #   with:
+      #     go-version: '^${{ env.golang_version }}' # The Go version to download (if necessary) and use.
+      #   # env:
+      #   #   GITHUB_TOKEN: ${{ github.token }}
+      # - run:  go run main.go
 
 # Set up golang in env
-      # - name: Setup go
-      #   run: |
-      #     wget https://dl.google.com/go/go${{ env.golang_version }}.linux-amd64.tar.gz
-      #     sudo tar -C /usr/local/ -xzf go${{ env.golang_version }}.linux-amd64.tar.gz
-      #     export PATH=$PATH:/usr/local/go/bin
-      #     export TEST="Hello workflow!"
+      - name: Setup go
+        run: |
+          wget https://dl.google.com/go/go${{ env.golang_version }}.linux-amd64.tar.gz
+          sudo tar -C /usr/local/ -xzf go${{ env.golang_version }}.linux-amd64.tar.gz
+          export PATH=$PATH:/usr/local/go/bin
 
-      # - name: go version
-      #   run: go version
+      - name: go version
+        run: go version
       
-      # - name: main.go
-      #   run: go run .
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: main.go
+        run: go run main.go
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       # - name: initial labeling
       #   uses: andymckay/labeler@master
