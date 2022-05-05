@@ -34,6 +34,10 @@ func listEnv() {
 
 func auth(){
 	ctx := context.Background()
+	if ghToken == ""{
+		fmt.Println("Error: Github token is missing")
+		return
+	}
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: ghToken},
 	)
