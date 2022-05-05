@@ -1,19 +1,15 @@
 package main
 
 import (
-	// "bytes"
-	// "encoding/json"
-	// "bytes"
-	// "encoding/json"
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"strings"
 	"time"
-
-	// "log"
 	"net/http"
 	"os"
-	// "strings"
 )
 
 var ghRepoOwner = os.Getenv("GITHUB_REPOSITORY_OWNER")
@@ -51,13 +47,13 @@ func auth() {
 		fmt.Println("Error: Github Reference Name not available")
 	}
 
-	// requestBody, err := json.Marshal(map[string]string{
-	// 	"labels": "test",
-	// })
-	// if err != nil {log.Fatalln(err)}
+	requestBody, err := json.Marshal(map[string]string{
+		"labels": "test",
+	})
+	if err != nil {log.Fatalln(err)}
 
-	// prNumber := strings.Split(ghRefName, "/")[0]
-	url := ghAPIURL + "/repos/" + ghRepo //+ "/issues/" + prNumber + "/labels"
+	prNumber := strings.Split(ghRefName, "/")[0]
+	url := ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
 	fmt.Println("URL: ", url)
 
 	timeout := time.Duration(5 * time.Second)
@@ -65,8 +61,8 @@ func auth() {
 		Timeout: timeout,
 	}
 
-	// request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
-	request, err := http.NewRequest("POST", url, nil)
+	request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	// request, err := http.NewRequest("POST", url, nil)
 	request.Header.Add("Accept", "application/vnd.github.v3+json")
 	request.Header.Add("Authorization", "token "+ghToken)
 	request.Header.Set("Content-Type", "application/json")
