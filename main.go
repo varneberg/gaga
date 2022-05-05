@@ -14,7 +14,7 @@ import (
 
 var ghRepoOwner = os.Getenv("GITHUB_REPOSITORY_OWNER")
 var ghRef = os.Getenv("GITHUB_REF")
-var ghRefName = os.Getenv("GITHUB_REF_NAME")
+var ghRefName = os.Getenv("GITHUB_RE_NAME")
 var ghRepo = os.Getenv("GITHUB_REPOSITORY")
 var ghToken = os.Getenv("GITHUB_TOKEN")
 var ghEvent = os.Getenv("GITHUB_EVENT_NAME")
@@ -39,20 +39,28 @@ func listEnv() {
 	fmt.Printf("-----------------------\n")
 }
 
-func inputLabels() ([]string){
+func inputLabels() []string {
 	input := os.Args[1:]
-	// fmt.Println(input)
 	return input
+}
+
+func checkEnv() {
+	if ghEvent != "pull_request" {
+		fmt.Println("Error: Not a pull request")
+		os.Exit(0)
+	}
+	if ghRefName == "" {
+		fmt.Println("Error: Github Reference Name not available")
+		os.Exit(0)
+	}
+}
+
+func apiRequest() {
+	checkEnv()
 }
 
 func auth() {
 	inputLabels()
-	if ghEvent != "pull_request" {
-		fmt.Println("Error: Not a pull request")
-	}
-	if ghRefName == "" {
-		fmt.Println("Error: Github Reference Name not available")
-	}
 
 	// labels := []string{"test", "test2"}
 	labels := inputLabels()
@@ -60,7 +68,8 @@ func auth() {
 	requestBody, err := json.Marshal(map[string][]string{
 		"labels": labels,
 	})
-	fmt.Println(string(requestBody))
+	// fmt.Println(string(requestBody))
+
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -87,19 +96,17 @@ func auth() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	log.Printf(string(body))
 }
 
 func main() {
-	listEnv()
+	// listEnv()
 	fmt.Println()
 	auth()
 }

@@ -47,7 +47,7 @@ jobs:
       
       - name: main.go
         run: go run main.go test/label 
-        env:
+jkk        env:
           GITHUB_TOKEN: ${{ github.token }}
 
       # - name: initial labeling
