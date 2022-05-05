@@ -32,6 +32,8 @@ jobs:
         with:
           go-version: '^${{ env.golang_version }}' # The Go version to download (if necessary) and use.
       - run:  go run main.go
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
     # Set up golang in env
       # - name: Setup go
