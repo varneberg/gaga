@@ -2,90 +2,39 @@ package main
 
 import (
 	// "context"
-	"errors"
 	"fmt"
-	"strings"
 
 	// "log"
 	"os"
 	// "syscall"
-	"github.com/google/go-github/github"
-	"golang.org/x/oauth2"
 	// "golang.org/x/term"
 )
 
-const EnvBaseURL = "GITHUB_BASE_URL"
-type Config struct {
-	Token        string
-	BaseURL      string
-	Owner        string
-	Repo         string
-	CI           string
-}
+var ghRef = os.Getenv("GITHUB_REF")
+var ghRepo = os.Getenv("GITHUB_REPOSITORY")
+var ghToken = os.Getenv("GITHUB_TOKEN")
+var ghEventName = os.Getenv("GITHUB_EVENT_NAME")
+var ghActor = os.Getenv("GITHUB_ACTOR")
+var ghWorkflow = os.Getenv("GITHUB_WORKFLOW")
+var ghActionsIDTokenRequestURL=os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
+var ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
 
-type Client struct {
-	*github.Client
-	Debug bool
-
-	Config Config
-
-	common service
-}
-
-type service struct {
-	client *Client
-}
-
-func NewClient() (*Client, error) {
-	var cfg Config
-	token := cfg.Token
-
-	if strings.HasPrefix(token, "$") {
-		token = os.Getenv(strings.TrimPrefix(token, "$"))
-	}
-
-	if token == "" {
-		fmt.Println("github token is missing")
-		return &Client{}, errors.New("github token is missing")
-	}
-
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: token},
-	)
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
-	client := github.NewClient(tc)
-
-	baseURL := cfg.BaseURL
-	baseURL = strings.TrimPrefix(baseURL, "$")
-	if baseURL == EnvBaseURL {
-		baseURL = os.Getenv(EnvBaseURL)
-	}
-	if baseURL != "" {
-		var err error
-		client, err = github.NewEnterpriseClient(baseURL, baseURL, tc)
-		if err != nil {
-			fmt.Println("failed to create a new github api client")
-			return &Client{}, errors.New("failed to create a new github api client")
-		}
-	} 
-	c := &Client{
-		Config: cfg,
-		Client: client,
-	}
-	return c, nil
-}
 
 func listEnv() {
-	for _, env := range os.Environ() {
-		fmt.Println(env)
-	}
+	fmt.Println(ghRef)
+	fmt.Println(ghRepo)
+	fmt.Println(ghToken)
+	fmt.Println(ghEventName)
+	fmt.Println(ghActor)
+	fmt.Println(ghWorkflow)
+	fmt.Println(ghActionsIDTokenRequestURL)
+	fmt.Println(ghActionsIDTokenRequestToken)
 	fmt.Printf("-----------------------\n")
 }
 
 func main() {
 	listEnv()
 	fmt.Println()
-	NewClient()
 }
 // func main() {
 	//fmt.Print("GitHub Token: ")

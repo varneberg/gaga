@@ -35,7 +35,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - run:  go run main.go
 
-    # Set up golang in env
+# Set up golang in env
       # - name: Setup go
       #   run: |
       #     wget https://dl.google.com/go/go${{ env.golang_version }}.linux-amd64.tar.gz
