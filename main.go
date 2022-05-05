@@ -21,14 +21,14 @@ var ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
 
 
 func listEnv() {
-	fmt.Println(ghRef)
-	fmt.Println(ghRepo)
-	fmt.Println(ghToken)
-	fmt.Println(ghEventName)
-	fmt.Println(ghActor)
-	fmt.Println(ghWorkflow)
-	fmt.Println(ghActionsIDTokenRequestURL)
-	fmt.Println(ghActionsIDTokenRequestToken)
+	fmt.Println("Github Ref: ",ghRef)
+	fmt.Println("Github Repo: ",ghRepo)
+	fmt.Println("Github Token: ",ghToken)
+	fmt.Println("Github Event: ",ghEventName)
+	fmt.Println("Github Actor: ",ghActor)
+	fmt.Println("Github Workflow: ",ghWorkflow)
+	fmt.Println("Github Actions Token Request URL: ",ghActionsIDTokenRequestURL)
+	fmt.Println("Github Actions Request Token: ",ghActionsIDTokenRequestToken)
 	fmt.Printf("-----------------------\n")
 }
 
