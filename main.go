@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"strings"
-	"time"
 	"net/http"
 	"os"
+	"strings"
+	"time"
 )
 
 var ghRepoOwner = os.Getenv("GITHUB_REPOSITORY_OWNER")
@@ -39,6 +39,7 @@ func listEnv() {
 	fmt.Printf("-----------------------\n")
 }
 
+
 func auth() {
 	if ghEvent != "pull_request" {
 		fmt.Println("Error: Not a pull request")
@@ -47,10 +48,13 @@ func auth() {
 		fmt.Println("Error: Github Reference Name not available")
 	}
 
+	labels := `[ "test", "test2, "test3" ]`
 	requestBody, err := json.Marshal(map[string]string{
-		"labels": `["test"]`,
+		"labels": labels,
 	})
-	if err != nil {log.Fatalln(err)}
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	prNumber := strings.Split(ghRefName, "/")[0]
 	url := ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
@@ -82,15 +86,7 @@ func auth() {
 		log.Fatalln(err)
 	}
 
-	log.Println(string(body))
-	// req, err := http.NewRequest("POST", url, nil)
-	// if err != nil {fmt.Println("Error: ", err.Error())}
-	// req.Header.Add("Authorization: Bearer", ghToken)
-	// req.Header.Add("Content-Type", "application/json")
-	// fmt.Print(req)
-	// response, err := client.Do(req)
-	// if err != nil {fmt.Println("Error: ",err.Error())}
-	// defer response.Body.Close()
+	log.Printf(string(body))
 }
 
 func main() {
@@ -98,77 +94,3 @@ func main() {
 	fmt.Println()
 	auth()
 }
-
-// func getRequest(){
-// 	resp, err := http.Get("https://www.vg.no")
-// 	if err != nil {
-// 		log.Fatalln(err)
-// 	}
-
-// 	defer resp.Body.Close()
-
-// 	body, err := ioutil.ReadAll(resp.Body)
-// 	if err != nil {
-// 		log.Fatalln(err)
-// 	}
-
-// 	log.Println(string(body))
-// }
-// func auth(){
-// 	ctx := context.Background()
-// 	if ghToken == ""{
-// 		fmt.Println("Error: Github token is missing")
-// 		return
-// 	}
-// 	ts := oauth2.StaticTokenSource(
-// 		&oauth2.Token{AccessToken: ghToken},
-// 	)
-
-// 	tc := oauth2.NewClient(ctx, ts)
-
-// 	client := github.NewClient(tc)
-// 	user, resp, err := client.Users.Get(ctx, "")
-// 	if err != nil {
-// 		fmt.Printf("\nerror: %v\n", err)
-// 		return
-// 	}
-// 	// Rate.Limit should most likely be 5000 when authorized.
-// 	log.Printf("Rate: %#v\n", resp.Rate)
-// 	// If a Token Expiration has been set, it will be displayed.
-// 	fmt.Printf("\n%v\n", github.Stringify(user))
-
-// }
-// func main() {
-//fmt.Print("GitHub Token: ")
-
-// for _, env := range os.Environ() {
-// 	fmt.Println(env)
-// }
-// byteToken, _ := term.ReadPassword(int(syscall.Stdin))
-// println()
-// token := string(byteToken)
-
-// ctx := context.Background()
-// ts := oauth2.StaticTokenSource(
-// 	&oauth2.Token{AccessToken: token},
-// )
-// tc := oauth2.NewClient(ctx, ts)
-
-// client := github.NewClient(tc)
-
-// user, resp, err := client.Users.Get(ctx, "")
-// if err != nil {
-// 	fmt.Printf("\nerror: %v\n", err)
-// 	return
-// }
-
-// // Rate.Limit should most likely be 5000 when authorized.
-// log.Printf("Rate: %#v\n", resp.Rate)
-
-// // If a Token Expiration has been set, it will be displayed.
-// if !resp.TokenExpiration.IsZero() {
-// 	log.Printf("Token Expiration: %v\n", resp.TokenExpiration)
-// }
-
-// fmt.Printf("\n%v\n", github.Stringify(user))
-// }
