@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	// "flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,17 +13,19 @@ import (
 	"time"
 )
 
-var ghRepoOwner = os.Getenv("GITHUB_REPOSITORY_OWNER")
-var ghRef = os.Getenv("GITHUB_REF")
-var ghRefName = os.Getenv("GITHUB_REF_NAME")
-var ghRepo = os.Getenv("GITHUB_REPOSITORY")
-var ghToken = os.Getenv("GITHUB_TOKEN")
-var ghEvent = os.Getenv("GITHUB_EVENT_NAME")
-var ghActor = os.Getenv("GITHUB_ACTOR")
-var ghWorkflow = os.Getenv("GITHUB_WORKFLOW")
-var ghActionsIDTokenRequestURL = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
-var ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-var ghAPIURL = os.Getenv("GITHUB_API_URL")
+var (
+	ghRepoOwner                  = os.Getenv("GITHUB_REPOSITORY_OWNER")
+	ghRef                        = os.Getenv("GITHUB_REF")
+	ghRefName                    = os.Getenv("GITHUB_REF_NAME")
+	ghRepo                       = os.Getenv("GITHUB_REPOSITORY")
+	ghToken                      = os.Getenv("GITHUB_TOKEN")
+	ghEvent                      = os.Getenv("GITHUB_EVENT_NAME")
+	ghActor                      = os.Getenv("GITHUB_ACTOR")
+	ghWorkflow                   = os.Getenv("GITHUB_WORKFLOW")
+	ghActionsIDTokenRequestURL   = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
+	ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+	ghAPIURL                     = os.Getenv("GITHUB_API_URL")
+)
 
 func listEnv() {
 	fmt.Println("Github Repo Owner: ", ghRepoOwner)
@@ -56,14 +59,14 @@ func checkEnv() {
 }
 
 func apiRequest() {
-	checkEnv()
+	return
 }
 
-func auth() {
-	inputLabels()
+func postLabel(labels []string) {
+	//inputLabels()
 
 	// labels := []string{"test", "test2"}
-	labels := inputLabels()
+	// labels := inputLabels()
 
 	requestBody, err := json.Marshal(map[string][]string{
 		"labels": labels,
@@ -105,8 +108,35 @@ func auth() {
 	log.Printf(string(body))
 }
 
+
+var labels []string
+
+
 func main() {
-	// listEnv()
-	fmt.Println()
-	auth()
+	if len(os.Args[1:]) == 0 {
+		fmt.Println("Error: No arguments")
+		os.Exit(0)
+	}
+	
+	checkEnv()
+	for i, arg := range os.Args[1:] {
+
+		if i+2 >= len(os.Args){
+			break
+		}
+		value := os.Args[i+2]
+		fmt.Println(arg, value)
+		switch arg {
+		case "-l":
+			labels[i] = value
+		case "-c":
+			// comment := value
+		}
+
+		}
+		
+		postLabel(labels)
+
+
+
 }
