@@ -63,10 +63,9 @@ func checkEnv() {
 func parseLabel(label string)([]byte){
 	var labels []string
 	labels = append(labels, label)
-	rb, err := json.Marshal(map[string]string{
-		"labels": label,
+	rb, err := json.Marshal(map[string][]string{
+		"labels": labels,
 	})	
-
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -86,7 +85,6 @@ func postLabel(label string) {
 	}
 
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
-	// request, err := http.NewRequest("POST", url, nil)
 	request.Header.Add("Accept", "application/vnd.github.v3+json")
 	request.Header.Add("Authorization", "token "+ghToken)
 	request.Header.Set("Content-Type", "application/json")
