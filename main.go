@@ -109,8 +109,8 @@ func(i *arrayFlags) Set(value string) error {
 // orange : #D93F0B
 type Label struct {
 	Name 					[]string 	`json:"name"`
-	Description 	string 	`json:"description"`
-	Color					string  `json:"color"`
+	Description 	string 	`json:"description, omitempty"`
+	Color					string  `json:"color, omitempty"`
 }
 
 func parseLabel(label Label) []byte {
@@ -139,7 +139,7 @@ func main() {
 		newLabel := Label{
 			Name: labelList,
 			Description: *label_desc,
-			Color: *label_color,
+			Color: label_color,
 		}
 		postLabel(newLabel)
 		
