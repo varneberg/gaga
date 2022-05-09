@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -41,7 +42,7 @@ func listEnv() {
 	fmt.Printf("-----------------------\n")
 }
 
-func checkArgs(){
+func checkArgs() {
 	if len(os.Args[1:]) == 0 {
 		fmt.Println("Error: No arguments")
 		os.Exit(0)
@@ -59,19 +60,17 @@ func checkEnv() {
 	}
 }
 
-
-func parseLabel(label string)([]byte){
+func parseLabel(label string) []byte {
 	var labels []string
 	labels = append(labels, label)
 	rb, err := json.Marshal(map[string][]string{
 		"labels": labels,
-	})	
+	})
 	if err != nil {
 		log.Fatalln(err)
 	}
 	return rb
 }
-
 
 func postLabel(label string) {
 	requestBody := parseLabel(label)
@@ -106,22 +105,64 @@ func postLabel(label string) {
 	fmt.Println()
 }
 
+type Label struct {
+	Name 					string 	`json:"name`
+	Description 	string 	`json:description`
+	Color					string  `json:color`
+}
 
+func formatLabel(label Label){
+	fmt.Println(label)
+
+}
 
 func main() {
 	checkArgs()
 	checkEnv()
 	fmt.Println()
-	
-	for i:=1; i<len(os.Args)-1; i++ {
-		switch os.Args[i]{
-		case "-l":
-			postLabel(os.Args[i+1])
 
-		case "-c":
-			//Todo
-		default:
-			//Todo
+	labelcmd := flag.NewFlagSet("label", flag.ExitOnError)
+	label_name := labelcmd.String("n", "", "Name of the new label")
+	label_desc := labelcmd.String("d", "", "Description of label")
+	label_color := labelcmd.String("c", "", "Color of label")
+	switch os.Args[1] {
+	case "label":
+		labelcmd.Parse(os.Args[2:])
+		// fmt.Println("Label:")
+		// fmt.Println("\tLabel Name: ", *label_name)
+		// fmt.Println("\tDescription: ", *label_desc)
+		// fmt.Println("\tColor: ", *label_color)
+		newLabel := Label{
+			Name: *label_name,
+			Description: *label_desc,
+			Color: *label_color,
 		}
+		formatLabel(newLabel)
+		
+	default:
+		fmt.Println("what")
 	}
+
+
+	// var options []string = nil
+	// for i := 1; i < len(os.Args); i++ {
+	// 	fmt.Println("i: ",i)
+	// 	switch os.Args[i] {
+	// 	case "-l":
+	// 		options = nil
+	// 		continue
+	// 		//postLabel(os.Args[i+1])
+	// 	case "-c":
+	// 		options = nil
+	// 		continue
+	// 		//Todo
+	// 	default:
+	// 		options = append(options, os.Args[i])
+	// 		//Todo
+	// 	}
+	// 	fmt.Println(options)
+	// }
 }
+
+// colors
+// orange : #D93F0B
