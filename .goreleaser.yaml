@@ -19,12 +19,12 @@ builds:
     - arm
     - arm64
 archives:
-- name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
 - replacements:
     darwin: 'darwin'
     linux: 'linux'
     windows: 'windows'
     386: "i386"
     amd64: "amd64"
+  name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 release:
   prerelease: auto
