@@ -144,6 +144,6 @@ func main() {
 		postLabel(newLabel)
 		
 	default:
-		fmt.Println("what")
+		fmt.Println("Invalid arguments")
 	}
 }
