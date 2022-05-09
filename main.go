@@ -118,7 +118,7 @@ func parseLabel(label Label) []byte {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	// fmt.Println(string(rb))
+	fmt.Println(string(rb))
 	return rb
 }
 

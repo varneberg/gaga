@@ -46,7 +46,7 @@ jobs:
         run: go version
       
       - name: main.go
-        run: go run main.go label -n test/Color -d "This is a label"
+        run: go run main.go label -n test2 -d "This is a label"
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
