@@ -139,7 +139,7 @@ func main() {
 		newLabel := Label{
 			Name: labelList,
 			Description: *label_desc,
-			Color: label_color,
+			Color: *label_color,
 		}
 		postLabel(newLabel)
 		
