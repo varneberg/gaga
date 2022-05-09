@@ -1,3 +1,3 @@
-module github.com/varneberg/Gaga
+module github.com/varneberg/gaga
 
 go 1.17
