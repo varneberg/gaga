@@ -108,7 +108,7 @@ func(i *arrayFlags) Set(value string) error {
 // colors
 // orange : #D93F0B
 type Label struct {
-	Name 					[]string 	`json:"name"`
+	Name 					[]string 	`json:"labels"`
 	Description 	string 	`json:"description,omitempty"`
 	Color					string  `json:"color,omitempty"`
 }
