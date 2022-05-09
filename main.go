@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	// "flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -42,9 +41,11 @@ func listEnv() {
 	fmt.Printf("-----------------------\n")
 }
 
-func inputLabels() []string {
-	input := os.Args[1:]
-	return input
+func checkArgs(){
+	if len(os.Args[1:]) == 0 {
+		fmt.Println("Error: No arguments")
+		os.Exit(0)
+	}
 }
 
 func checkEnv() {
@@ -58,25 +59,23 @@ func checkEnv() {
 	}
 }
 
-func apiRequest() {
-	return
-}
 
-func postLabel(labels []string) {
-	//inputLabels()
-
-	// labels := []string{"test", "test2"}
-	// labels := inputLabels()
-
-	requestBody, err := json.Marshal(map[string][]string{
-		"labels": labels,
-	})
-	// fmt.Println(string(requestBody))
+func parseLabel(label string)([]byte){
+	var labels []string
+	labels = append(labels, label)
+	rb, err := json.Marshal(map[string]string{
+		"labels": label,
+	})	
 
 	if err != nil {
 		log.Fatalln(err)
 	}
+	return rb
+}
 
+
+func postLabel(label string) {
+	requestBody := parseLabel(label)
 	prNumber := strings.Split(ghRefName, "/")[0]
 	url := ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
 	fmt.Println("URL: ", url)
@@ -106,37 +105,25 @@ func postLabel(labels []string) {
 		log.Fatalln(err)
 	}
 	log.Printf(string(body))
+	fmt.Println()
 }
 
 
-var labels []string
-
 
 func main() {
-	if len(os.Args[1:]) == 0 {
-		fmt.Println("Error: No arguments")
-		os.Exit(0)
-	}
-	
+	checkArgs()
 	checkEnv()
-	for i, arg := range os.Args[1:] {
-
-		if i+2 >= len(os.Args){
-			break
-		}
-		value := os.Args[i+2]
-		fmt.Println(arg, value)
-		switch arg {
+	fmt.Println()
+	
+	for i:=1; i<len(os.Args)-1; i++ {
+		switch os.Args[i]{
 		case "-l":
-			labels[i] = value
+			postLabel(os.Args[i+1])
+
 		case "-c":
-			// comment := value
+			//Todo
+		default:
+			//Todo
 		}
-
-		}
-		
-		postLabel(labels)
-
-
-
+	}
 }
