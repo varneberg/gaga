@@ -12,17 +12,19 @@ import (
 	"time"
 )
 
-var ghRepoOwner = os.Getenv("GITHUB_REPOSITORY_OWNER")
-var ghRef = os.Getenv("GITHUB_REF")
-var ghRefName = os.Getenv("GITHUB_REF_NAME")
-var ghRepo = os.Getenv("GITHUB_REPOSITORY")
-var ghToken = os.Getenv("GITHUB_TOKEN")
-var ghEvent = os.Getenv("GITHUB_EVENT_NAME")
-var ghActor = os.Getenv("GITHUB_ACTOR")
-var ghWorkflow = os.Getenv("GITHUB_WORKFLOW")
-var ghActionsIDTokenRequestURL = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
-var ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-var ghAPIURL = os.Getenv("GITHUB_API_URL")
+var (
+	ghRepoOwner                  = os.Getenv("GITHUB_REPOSITORY_OWNER")
+	ghRef                        = os.Getenv("GITHUB_REF")
+	ghRefName                    = os.Getenv("GITHUB_REF_NAME")
+	ghRepo                       = os.Getenv("GITHUB_REPOSITORY")
+	ghToken                      = os.Getenv("GITHUB_TOKEN")
+	ghEvent                      = os.Getenv("GITHUB_EVENT_NAME")
+	ghActor                      = os.Getenv("GITHUB_ACTOR")
+	ghWorkflow                   = os.Getenv("GITHUB_WORKFLOW")
+	ghActionsIDTokenRequestURL   = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
+	ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+	ghAPIURL                     = os.Getenv("GITHUB_API_URL")
+)
 
 func listEnv() {
 	fmt.Println("Github Repo Owner: ", ghRepoOwner)
@@ -39,32 +41,40 @@ func listEnv() {
 	fmt.Printf("-----------------------\n")
 }
 
-func inputLabels() ([]string){
-	input := os.Args[1:]
-	// fmt.Println(input)
-	return input
+func checkArgs(){
+	if len(os.Args[1:]) == 0 {
+		fmt.Println("Error: No arguments")
+		os.Exit(0)
+	}
 }
 
-func auth() {
-	inputLabels()
+func checkEnv() {
 	if ghEvent != "pull_request" {
 		fmt.Println("Error: Not a pull request")
+		os.Exit(0)
 	}
 	if ghRefName == "" {
 		fmt.Println("Error: Github Reference Name not available")
+		os.Exit(0)
 	}
+}
 
-	// labels := []string{"test", "test2"}
-	labels := inputLabels()
 
-	requestBody, err := json.Marshal(map[string][]string{
+func parseLabel(label string)([]byte){
+	var labels []string
+	labels = append(labels, label)
+	rb, err := json.Marshal(map[string][]string{
 		"labels": labels,
-	})
-	fmt.Println(string(requestBody))
+	})	
 	if err != nil {
 		log.Fatalln(err)
 	}
+	return rb
+}
 
+
+func postLabel(label string) {
+	requestBody := parseLabel(label)
 	prNumber := strings.Split(ghRefName, "/")[0]
 	url := ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
 	fmt.Println("URL: ", url)
@@ -75,7 +85,6 @@ func auth() {
 	}
 
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
-	// request, err := http.NewRequest("POST", url, nil)
 	request.Header.Add("Accept", "application/vnd.github.v3+json")
 	request.Header.Add("Authorization", "token "+ghToken)
 	request.Header.Set("Content-Type", "application/json")
@@ -87,19 +96,32 @@ func auth() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	log.Printf(string(body))
+	fmt.Println()
 }
 
+
+
 func main() {
-	listEnv()
+	checkArgs()
+	checkEnv()
 	fmt.Println()
-	auth()
+	
+	for i:=1; i<len(os.Args)-1; i++ {
+		switch os.Args[i]{
+		case "-l":
+			postLabel(os.Args[i+1])
+
+		case "-c":
+			//Todo
+		default:
+			//Todo
+		}
+	}
 }
