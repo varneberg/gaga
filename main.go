@@ -60,19 +60,8 @@ func checkEnv() {
 	}
 }
 
-func parseLabel(label string) []byte {
-	var labels []string
-	labels = append(labels, label)
-	rb, err := json.Marshal(map[string][]string{
-		"labels": labels,
-	})
-	if err != nil {
-		log.Fatalln(err)
-	}
-	return rb
-}
 
-func postLabel(label string) {
+func postLabel(label Label) {
 	requestBody := parseLabel(label)
 	prNumber := strings.Split(ghRefName, "/")[0]
 	url := ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
@@ -105,64 +94,56 @@ func postLabel(label string) {
 	fmt.Println()
 }
 
-type Label struct {
-	Name 					string 	`json:"name`
-	Description 	string 	`json:description`
-	Color					string  `json:color`
+type arrayFlags []string
+
+func(i *arrayFlags) String() string {
+	return ""
+
 }
 
-func formatLabel(label Label){
-	fmt.Println(label)
+func(i *arrayFlags) Set(value string) error {
+	*i = append(*i, strings.TrimSpace(value))
+	return nil
+}
+// colors
+// orange : #D93F0B
+type Label struct {
+	Name 					[]string 	`json:"name"`
+	Description 	string 	`json:"description"`
+	Color					string  `json:"color"`
+}
 
+func parseLabel(label Label) []byte {
+	rb, err := json.Marshal(label)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	// fmt.Println(string(rb))
+	return rb
 }
 
 func main() {
 	checkArgs()
 	checkEnv()
-	fmt.Println()
-
+	// var label_name arrayFlags
 	labelcmd := flag.NewFlagSet("label", flag.ExitOnError)
 	label_name := labelcmd.String("n", "", "Name of the new label")
-	label_desc := labelcmd.String("d", "", "Description of label")
+	// labelcmd.Var(&label_name,"n", "Name of the label")
+	label_desc := labelcmd.String("d", "", "Description of label, enclosed with \"\"")
 	label_color := labelcmd.String("c", "", "Color of label")
 	switch os.Args[1] {
 	case "label":
+		var labelList []string
 		labelcmd.Parse(os.Args[2:])
-		// fmt.Println("Label:")
-		// fmt.Println("\tLabel Name: ", *label_name)
-		// fmt.Println("\tDescription: ", *label_desc)
-		// fmt.Println("\tColor: ", *label_color)
+		labelList = append(labelList, *label_name)
 		newLabel := Label{
-			Name: *label_name,
+			Name: labelList,
 			Description: *label_desc,
 			Color: *label_color,
 		}
-		formatLabel(newLabel)
+		postLabel(newLabel)
 		
 	default:
 		fmt.Println("what")
 	}
-
-
-	// var options []string = nil
-	// for i := 1; i < len(os.Args); i++ {
-	// 	fmt.Println("i: ",i)
-	// 	switch os.Args[i] {
-	// 	case "-l":
-	// 		options = nil
-	// 		continue
-	// 		//postLabel(os.Args[i+1])
-	// 	case "-c":
-	// 		options = nil
-	// 		continue
-	// 		//Todo
-	// 	default:
-	// 		options = append(options, os.Args[i])
-	// 		//Todo
-	// 	}
-	// 	fmt.Println(options)
-	// }
 }
-
-// colors
-// orange : #D93F0B
