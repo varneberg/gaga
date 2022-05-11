@@ -44,10 +44,7 @@ func IsFlagPassed(name string) bool {
 
 type FlagSlice []string
 
-func (i *FlagSlice) String() string {
-	return ""
-}
-
+func (i *FlagSlice) String() string { return "" }
 func (i *FlagSlice) Set(value string) error {
 	*i = append(*i, strings.TrimSpace(value))
 	return nil
