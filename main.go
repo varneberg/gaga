@@ -10,6 +10,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -41,13 +43,6 @@ func listEnv() {
 	fmt.Printf("-----------------------\n")
 }
 
-func checkArgs(){
-	if len(os.Args[1:]) == 0 {
-		fmt.Println("Error: No arguments")
-		os.Exit(0)
-	}
-}
-
 func checkEnv() {
 	if ghEvent != "pull_request" {
 		fmt.Println("Error: Not a pull request")
@@ -59,19 +54,17 @@ func checkEnv() {
 	}
 }
 
-
-func parseLabel(label string)([]byte){
+func parseLabel(label string) []byte {
 	var labels []string
 	labels = append(labels, label)
 	rb, err := json.Marshal(map[string][]string{
 		"labels": labels,
-	})	
+	})
 	if err != nil {
 		log.Fatalln(err)
 	}
 	return rb
 }
-
 
 func postLabel(label string) {
 	requestBody := parseLabel(label)
@@ -106,22 +99,29 @@ func postLabel(label string) {
 	fmt.Println()
 }
 
-
-
 func main() {
-	checkArgs()
 	checkEnv()
 	fmt.Println()
-	
-	for i:=1; i<len(os.Args)-1; i++ {
-		switch os.Args[i]{
-		case "-l":
-			postLabel(os.Args[i+1])
 
-		case "-c":
-			//Todo
-		default:
-			//Todo
-		}
+	var labelName string
+	var labelColor string
+	var labelDescription string
+
+	var cmdLabel = &cobra.Command{
+		Use:   "label [label]",
+		Short: "Label a pull request",
+		Long:  `label is for labeling a pull request.`,
+		Args:  cobra.MinimumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			postLabel(strings.Join(args, " "))
+		},
 	}
+
+	cmdLabel.Flags().StringVarP(&labelName, "name", "n", "", "label name")
+	cmdLabel.Flags().StringVarP(&labelColor, "color", "c", "", "label color")
+	cmdLabel.Flags().StringVarP(&labelDescription, "description", "d", "", "label description")
+
+	var rootCmd = &cobra.Command{Use: "app"}
+	rootCmd.AddCommand(cmdLabel)
+	rootCmd.Execute()
 }
