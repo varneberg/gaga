@@ -32,7 +32,7 @@ func checkEnv() {
 	}
 }
 
-func isFlagPassed(name string) bool {
+func IsFlagPassed(name string) bool {
 	found := false
 	flag.Visit(func(f *flag.Flag) {
 		if f.Name == name {
@@ -44,7 +44,9 @@ func isFlagPassed(name string) bool {
 
 type FlagSlice []string
 
-func (i *FlagSlice) String() string { return "" }
+func (i *FlagSlice) String() string {
+	return ""
+}
 
 func (i *FlagSlice) Set(value string) error {
 	*i = append(*i, strings.TrimSpace(value))

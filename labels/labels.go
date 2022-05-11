@@ -29,12 +29,12 @@ var (
 )
 
 // Returns URL to the active pull request
-func GetPrUrl() string {
+func GetPRUrl() string {
 	prNumber := strings.Split(ghRefName, "/")[0]
 	return ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
 }
 
-func getRepoUrl() string {
+func GetRepoUrl() string {
 	// https://api.github.com/repos/OWNER/REPO/labels
 	return ghAPIURL + "/repos/" + ghRepo + "/labels"
 }
@@ -85,31 +85,55 @@ func APIRequest(requestType string, url string, requestBody []byte) {
 	fmt.Println()
 }
 
+func ListRepoLabels() {
+	//APIRequest("GET")
+	url := GetRepoUrl()
+	fmt.Println(url)
+	APIRequest("GET", url, nil)
+
+}
+
 // Adds labels to current pull request
 func addLabelPR(label Label) {
 	requestBody := parseLabel(label)
-	url := GetPrUrl()
+	url := GetPRUrl()
 	APIRequest("POST", url, requestBody)
 }
 
-func addLabelRepo(label Label) {
+func createNewLabelRepo(label Label) {
 
 }
 
 func LabelHandler(args []string) {
+	ListRepoLabels()
+
 	var labelName flags.FlagSlice
 	labelFlag := flag.NewFlagSet("label", flag.ExitOnError)
 	labelFlag.Var(&labelName, "n", "Name of the labels")
-	labelNewName := labelFlag.String("N", "", "Name new labels to add")
+	//labelNewName := labelFlag.String("N", "", "Name new labels to add")
 	labelDesc := labelFlag.String("d", "", "Description of labels, enclosed with \"\"")
-	labelColor := labelFlag.String("c", "", "Color of labels")
+	labelColor := labelFlag.String("c", "1D76DB", "Color of labels")
 	labelFlag.Parse(args)
+
+	tail := flag.Args()
+	fmt.Printf("Tail: %+q\n", tail)
+
 	newLabel := Label{
 		Name:        labelName,
 		Description: *labelDesc,
 		Color:       *labelColor,
 	}
-	fmt.Println(*labelNewName)
+
+	if newLabel.Description == "" {
+		fmt.Println("No description")
+	}
+
+	fmt.Println("labelName: ", labelName)
+	//fmt.Println("labelNewName: ", *labelNewName)
+	fmt.Println("labelDesc: ", *labelDesc)
+	fmt.Println("labelColor: ", *labelColor)
+	fmt.Println()
 	//fmt.Println(newLabel)
 	addLabelPR(newLabel)
+
 }
