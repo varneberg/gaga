@@ -20,8 +20,10 @@ tar -C /usr/bin -xzf ./gaga.tar.gz
 
 ## Usage
 
+Adding a label to a pull request:
+
 ```bash
-gaga -l <label_to_add> -l <label_to_add2>
+gaga label -n <label_to_add>
 ```
 
 ## Github Workflow Implementation
