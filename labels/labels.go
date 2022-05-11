@@ -89,12 +89,13 @@ func APIRequest(requestType string, url string, requestBody []byte) []byte {
 
 func GetRepoLabels() {
 	type labelResp struct {
-		id      int    `json:"type"`
-		node_id string `json:"node_id"`
-		url     string `json:"url"`
-		name    string `json:"name,omitempty"`
-		color   string `json:"color"`
-		Default string `json:"default"`
+		id          int    `json:"id"`
+		node_id     string `json:"node_id"`
+		url         string `json:"url"`
+		name        string `json:"name,omitempty"`
+		color       string `json:"color"`
+		Default     string `json:"default"`
+		description string `json:"description"`
 	}
 	//{
 	//	"id":4093697616,
