@@ -150,7 +150,7 @@ func LabelHandler(args []string) {
 	var labelColor = labelFlag.String("c", "", "Color of labels")
 	labelFlag.Parse(args)
 	if labelExists(*labelName) {
-		fmt.Println("newLabel", *labelName, "exists")
+		fmt.Println("Label", *labelName, "exists")
 		fmt.Println()
 		return
 	}
