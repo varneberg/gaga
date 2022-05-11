@@ -57,7 +57,7 @@ func parseLabel(label Label) []byte {
 }
 
 // Function for sending requests to the github API
-func APIRequest(requestType string, url string, requestBody []byte) {
+func APIRequest(requestType string, url string, requestBody []byte) []byte {
 	timeout := time.Duration(5 * time.Second)
 	client := &http.Client{
 		Timeout: timeout,
@@ -81,16 +81,21 @@ func APIRequest(requestType string, url string, requestBody []byte) {
 		log.Fatalln(err)
 		os.Exit(2)
 	}
-	fmt.Printf(string(body))
-	fmt.Println()
+	//fmt.Printf(string(body))
+	//fmt.Println()
+	return body
 }
 
-func ListRepoLabels() {
+func GetRepoLabels() {
 	//APIRequest("GET")
 	url := GetRepoUrl()
-	fmt.Println(url)
-	APIRequest("GET", url, nil)
-
+	body := APIRequest("GET", url, nil)
+	respLabel := Label{}
+	jsonErr := json.Unmarshal(body, respLabel)
+	if jsonErr != nil {
+		log.Fatal(jsonErr)
+	}
+	fmt.Println(respLabel)
 }
 
 // Adds labels to current pull request
@@ -105,7 +110,7 @@ func createNewLabelRepo(label Label) {
 }
 
 func LabelHandler(args []string) {
-	ListRepoLabels()
+	GetRepoLabels()
 
 	var labelName flags.FlagSlice
 	labelFlag := flag.NewFlagSet("label", flag.ExitOnError)
