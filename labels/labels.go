@@ -92,9 +92,9 @@ func GetRepoLabels() {
 		id          int    `json:"id"`
 		node_id     string `json:"node_id"`
 		url         string `json:"url"`
-		name        string `json:"name,omitempty"`
+		name        string `json:"name"`
 		color       string `json:"color"`
-		Default     string `json:"default"`
+		Default     bool   `json:"default"`
 		description string `json:"description"`
 	}
 	//{
