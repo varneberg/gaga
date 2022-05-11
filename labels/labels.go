@@ -114,7 +114,7 @@ func GetRepoLabels() {
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
 	}
-	fmt.Printf("%+v", respJson)
+	fmt.Printf("%+v", respJson.name)
 }
 
 // Adds labels to current pull request
