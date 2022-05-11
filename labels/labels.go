@@ -89,13 +89,13 @@ func APIRequest(requestType string, url string, requestBody []byte) []byte {
 
 func GetRepoLabels() {
 	type labelResp struct {
-		id          int    `json:"id"`
-		node_id     string `json:"node_id"`
-		url         string `json:"url"`
-		name        string `json:"name"`
-		color       string `json:"color"`
-		Default     bool   `json:"default"`
-		description string `json:"description"`
+		id          int
+		node_id     string
+		url         string
+		name        string
+		color       string
+		Default     bool
+		description string
 	}
 	//{
 	//	"id":4093697616,
@@ -109,12 +109,12 @@ func GetRepoLabels() {
 	//APIRequest("GET")
 	url := GetRepoUrl()
 	body := APIRequest("GET", url, nil)
-	respJson := labelResp{}
+	var respJson labelResp
 	jsonErr := json.Unmarshal(body, &respJson)
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
 	}
-	fmt.Println(respJson)
+	fmt.Printf("%+v", respJson)
 }
 
 // Adds labels to current pull request
