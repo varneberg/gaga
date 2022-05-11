@@ -1,17 +1,12 @@
 package labels
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/varneberg/gaga/flags"
-	"io/ioutil"
+	"github.com/varneberg/gaga/requests"
 	"log"
-	"net/http"
 	"os"
-	"strings"
-	"time"
 )
 
 var (
@@ -28,62 +23,39 @@ var (
 	ghAPIURL                     = os.Getenv("GITHUB_API_URL")
 )
 
-// Returns URL to the active pull request
-func GetPRUrl() string {
-	prNumber := strings.Split(ghRefName, "/")[0]
-	return ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
-}
-
-func GetRepoUrl() string {
-	// https://api.github.com/repos/OWNER/REPO/labels
-	return ghAPIURL + "/repos/" + ghRepo + "/labels"
-}
-
 // colors
 // orange : #D93F0B
-type Label struct {
-	Name        []string `json:"labels"`
-	Description string   `json:"description,omitempty"`
-	Color       string   `json:"color,omitempty"`
+
+// New label object
+type newLabel struct {
+	Name        string `json:"labels"` // Required to be a json array
+	Description string `json:"description,omitempty"`
+	Color       string `json:"color,omitempty"`
 }
 
-func parseLabel(label Label) []byte {
-	rb, err := json.Marshal(label)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println(string(rb))
-	return rb
+type changeLabel struct {
+	New_Name    string `json:"new_name"` // Required to be a json array
+	Description string `json:"description,omitempty"`
+	Color       string `json:"color,omitempty"`
 }
 
-// Function for sending requests to the github API
-func APIRequest(requestType string, url string, requestBody []byte) []byte {
-	timeout := time.Duration(5 * time.Second)
-	client := &http.Client{
-		Timeout: timeout,
-	}
-	//request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
-	request, err := http.NewRequest(requestType, url, bytes.NewBuffer(requestBody))
-	request.Header.Add("Accept", "application/vnd.github.v3+json")
-	request.Header.Add("Authorization", "token "+ghToken)
-	request.Header.Set("Content-Type", "application/json")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	resp, err := client.Do(request)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer resp.Body.Close()
+func updateLabel() {}
 
-	fmt.Println("Api Response: ", resp.Status)
-	body, err := ioutil.ReadAll(resp.Body)
+func parseLabelName(labelName string) []byte {
+	body, err := json.Marshal(labelName)
 	if err != nil {
 		log.Fatalln(err)
-		os.Exit(2)
 	}
-	//fmt.Printf(string(body))
-	//fmt.Println()
+	fmt.Println(string(body))
+	return body
+}
+
+func parseNewLabel(label newLabel) []byte {
+	body, err := json.Marshal(label)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(string(body))
 	return body
 }
 
@@ -96,17 +68,6 @@ type labelResp struct {
 	Default     bool
 	Description string
 }
-
-//{
-//	"id":4093697616,
-//	"node_id":"LA_kwDOHRgjdM70AN5Q",
-//	"url":"https://api.github.com/repos/varneberg/gaga/labels/bug",
-//	"name":"bug",
-//	"color":"d73a4a",
-//	"default":true,
-//	"description":"Something isn't working"
-//}
-//APIRequest("GET")
 
 func TestGetRepoLabels() []labelResp {
 	demoJson := `[
@@ -122,22 +83,19 @@ func TestGetRepoLabels() []labelResp {
 		]`
 	//jsonErr := json.Unmarshal([]byte(demoJson), &resp)
 	var resp []labelResp
-
 	jsonErr := json.Unmarshal([]byte(demoJson), &resp)
-
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
 	}
-	//fmt.Println(resp)
-	//for _, i := range resp {
-	//	fmt.Println(i.Name)
-	//}
 	return resp
 }
 
 func GetRepoLabels() []labelResp {
-	url := GetRepoUrl()
-	body := APIRequest("GET", url, nil)
+	url := requests.GetRepoUrl()
+	body := requests.SendRequest("GET", url, nil)
+	if body == nil {
+		fmt.Println("Ouf")
+	}
 	var resp []labelResp
 	jsonErr := json.Unmarshal(body, &resp)
 	if jsonErr != nil {
@@ -146,51 +104,66 @@ func GetRepoLabels() []labelResp {
 	return resp
 }
 
-func labelExists(labelName string) bool {
+func TestlabelExists(labelName string) bool {
 	labels := TestGetRepoLabels()
-	for _, i := range labels {
-		fmt.Println(i)
+	for _, elem := range labels {
+		if labelName == elem.Name {
+			return true
+		}
 	}
-	return true
+	return false
+}
+
+func labelExists(labelName string) bool {
+	labels := GetRepoLabels()
+	for _, elem := range labels {
+		if labelName == elem.Name {
+			return true
+		}
+	}
+	return false
 }
 
 // Adds labels to current pull request
-func addLabelPR(label Label) {
-	requestBody := parseLabel(label)
-	url := GetPRUrl()
-	APIRequest("POST", url, requestBody)
+func addLabelPR(labelName string) {
+	//requestBody := parseNewLabel(labelName)
+	body, err := json.Marshal(labelName)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	url := requests.GetPRUrl()
+	requests.SendRequest("POST", url, body)
 }
 
-func createNewLabelRepo(label Label) {
+func addNewLabelRepo(label newLabel) {
 
 }
 
 func LabelHandler(args []string) {
-	TestGetRepoLabels()
-	labelExists("test")
-
-	var labelName flags.FlagSlice
+	//GetRepoLabels()
+	//labelExists("test")
+	//var labelName flags.FlagSlice
 	labelFlag := flag.NewFlagSet("label", flag.ExitOnError)
-	labelFlag.Var(&labelName, "n", "Name of the labels")
-	//labelNewName := labelFlag.String("N", "", "Name new labels to add")
+	//labelFlag.Var(&labelName, "n", "Name of the labels")
+	labelName := labelFlag.String("n", "", "Name new labels to add")
 	labelDesc := labelFlag.String("d", "", "Description of labels, enclosed with \"\"")
 	var labelColor = labelFlag.String("c", "", "Color of labels")
 	labelFlag.Parse(args)
-
-	//tail := flag.Args()
-	//fmt.Printf("Tail: %+q\n", tail)
-
-	newLabel := Label{
-		Name:        labelName,
+	if labelExists(*labelName) {
+		fmt.Println("newLabel", *labelName, "exists")
+		fmt.Println()
+		return
+	}
+	newLabel := newLabel{
+		Name:        *labelName,
 		Description: *labelDesc,
 		Color:       *labelColor,
 	}
-	if labelDesc == nil {
-		fmt.Println("No desc")
-	}
-	if labelColor == nil {
-		fmt.Println("No color")
-	}
+	addNewLabelRepo(newLabel)
+	fmt.Println("newLabel: ", newLabel)
+
+	//tail := flag.Args()
+	//fmt.Printf("Tail: %+q\n", tail)
 
 	//if newLabel.Description == "" {
 	//	fmt.Println("No description")
@@ -201,7 +174,6 @@ func LabelHandler(args []string) {
 	//fmt.Println("labelDesc: ", *labelDesc)
 	//fmt.Println("labelColor: ", *labelColor)
 	//fmt.Println()
-	fmt.Println(newLabel)
 	//addLabelPR(newLabel)
 
 }

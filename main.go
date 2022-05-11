@@ -33,7 +33,7 @@ func main() {
 	//	// labelList = append(labelList, *label_name)
 	//
 	//	fmt.Println(os.Args[2])
-	//	newLabel := Label{
+	//	newLabel := newLabel{
 	//		Name:        label_name,
 	//		Description: *label_desc,
 	//		Color:       *label_color,
