@@ -76,6 +76,7 @@ func APIRequest(requestType string, url string, requestBody []byte) []byte {
 	}
 	defer resp.Body.Close()
 
+	fmt.Println("Api Response: ", resp.Status)
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
@@ -87,15 +88,32 @@ func APIRequest(requestType string, url string, requestBody []byte) []byte {
 }
 
 func GetRepoLabels() {
+	type labelResp struct {
+		id      int    `json:"type"`
+		node_id string `json:"node_id"`
+		url     string `json:"url"`
+		name    string `json:"name,omitempty"`
+		color   string `json:"color"`
+		Default string `json:"default"`
+	}
+	//{
+	//	"id":4093697616,
+	//	"node_id":"LA_kwDOHRgjdM70AN5Q",
+	//	"url":"https://api.github.com/repos/varneberg/gaga/labels/bug",
+	//	"name":"bug",
+	//	"color":"d73a4a",
+	//	"default":true,
+	//	"description":"Something isn't working"
+	//}
 	//APIRequest("GET")
 	url := GetRepoUrl()
 	body := APIRequest("GET", url, nil)
-	respLabel := Label{}
-	jsonErr := json.Unmarshal(body, respLabel)
+	respJson := labelResp{}
+	jsonErr := json.Unmarshal(body, &respJson)
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
 	}
-	fmt.Println(respLabel.Name)
+	fmt.Println(respJson)
 }
 
 // Adds labels to current pull request
@@ -120,8 +138,8 @@ func LabelHandler(args []string) {
 	labelColor := labelFlag.String("c", "1D76DB", "Color of labels")
 	labelFlag.Parse(args)
 
-	tail := flag.Args()
-	fmt.Printf("Tail: %+q\n", tail)
+	//tail := flag.Args()
+	//fmt.Printf("Tail: %+q\n", tail)
 
 	newLabel := Label{
 		Name:        labelName,
@@ -129,15 +147,15 @@ func LabelHandler(args []string) {
 		Color:       *labelColor,
 	}
 
-	if newLabel.Description == "" {
-		fmt.Println("No description")
-	}
+	//if newLabel.Description == "" {
+	//	fmt.Println("No description")
+	//}
 
-	fmt.Println("labelName: ", labelName)
-	//fmt.Println("labelNewName: ", *labelNewName)
-	fmt.Println("labelDesc: ", *labelDesc)
-	fmt.Println("labelColor: ", *labelColor)
-	fmt.Println()
+	//fmt.Println("labelName: ", labelName)
+	////fmt.Println("labelNewName: ", *labelNewName)
+	//fmt.Println("labelDesc: ", *labelDesc)
+	//fmt.Println("labelColor: ", *labelColor)
+	//fmt.Println()
 	//fmt.Println(newLabel)
 	addLabelPR(newLabel)
 
