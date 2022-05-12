@@ -46,7 +46,10 @@ jobs:
         run: go version
       
       - name: main.go
-        run: go run main.go -l label1 -l label2
+        run: |
+          go run main.go label -n label1
+          go run main.go label -n label2
+          go run main.go label -n label3
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
