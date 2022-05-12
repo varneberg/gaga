@@ -36,27 +36,28 @@ func GetPRUrl() string {
 }
 
 // Function for sending requests to the github API
-func SendRequest(requestType string, url string, requestBody []byte) []byte {
+func SendRequest(requestMethod string, url string, requestBody []byte) []byte {
 	timeout := time.Duration(5 * time.Second)
 	client := &http.Client{
 		Timeout: timeout,
 	}
-	//request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
-	request, err := http.NewRequest(requestType, url, bytes.NewBuffer(requestBody))
+
+	// Init request and add required headers
+	request, err := http.NewRequest(requestMethod, url, bytes.NewBuffer(requestBody))
 	request.Header.Add("Accept", "application/vnd.github.v3+json")
 	request.Header.Add("Authorization", "token "+ghToken)
 	request.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	// Send request
 	resp, err := client.Do(request)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("Api Response: ", resp.Status)
-	fmt.Println(resp.Body)
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
@@ -64,5 +65,28 @@ func SendRequest(requestType string, url string, requestBody []byte) []byte {
 	}
 	//fmt.Printf(string(body))
 	//fmt.Println()
+	fmt.Println("Api Response: \n\t", resp.Status)
+	fmt.Println("Response body: \n\t", string(body))
 	return body
+}
+
+func TestSendRequest(requestMethod string, url string, requestBody []byte) {
+	//timeout := time.Duration(5 * time.Second)
+	//client := &http.Client{
+	//	Timeout: timeout,
+	//}
+	request, err := http.NewRequest(requestMethod, url, bytes.NewBuffer(requestBody))
+	request.Header.Add("Accept", "application/vnd.github.v3+json")
+	request.Header.Add("Authorization", "token "+ghToken)
+	request.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	for _, i := range request.Form {
+		fmt.Println(i)
+
+	}
+	fmt.Printf("", request)
+
 }

@@ -19,6 +19,8 @@ func main() {
 	switch os.Args[1] {
 	case "label":
 		labels.LabelHandler(os.Args[2:])
+	case "labeltest":
+		labels.TestLabelHandler(os.Args[2:])
 	}
 	//labelcmd := flag.NewFlagSet("labels", flag.ExitOnError)
 	//// label_name := labelcmd.String("n", "", "Name of the labels")
