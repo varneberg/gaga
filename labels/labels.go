@@ -6,21 +6,6 @@ import (
 	"fmt"
 	"github.com/varneberg/gaga/requests"
 	"log"
-	"os"
-)
-
-var (
-	ghRepoOwner                  = os.Getenv("GITHUB_REPOSITORY_OWNER")
-	ghRef                        = os.Getenv("GITHUB_REF")
-	ghRefName                    = os.Getenv("GITHUB_REF_NAME")
-	ghRepo                       = os.Getenv("GITHUB_REPOSITORY")
-	ghToken                      = os.Getenv("GITHUB_TOKEN")
-	ghEvent                      = os.Getenv("GITHUB_EVENT_NAME")
-	ghActor                      = os.Getenv("GITHUB_ACTOR")
-	ghWorkflow                   = os.Getenv("GITHUB_WORKFLOW")
-	ghActionsIDTokenRequestURL   = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
-	ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-	ghAPIURL                     = os.Getenv("GITHUB_API_URL")
 )
 
 // colors
@@ -34,7 +19,7 @@ type newLabel struct {
 }
 
 type changeLabel struct {
-	New_Name    string `json:"new_name"` // Required to be a json array
+	NewName     string `json:"new_name"` // Required to be a json array
 	Description string `json:"description,omitempty"`
 	Color       string `json:"color,omitempty"`
 }
@@ -61,7 +46,7 @@ func parseNewLabel(label newLabel) []byte {
 
 type labelResp struct {
 	ID          int
-	Node_id     string
+	NodeId      string
 	Url         string
 	Name        string
 	Color       string
@@ -132,6 +117,7 @@ func addLabelPR(labelName string) {
 		log.Fatalln(err)
 	}
 	url := requests.GetPRUrl()
+	fmt.Println("Api Request: ", string(body))
 	requests.SendRequest("POST", url, body)
 }
 
@@ -151,7 +137,7 @@ func LabelHandler(args []string) {
 	labelFlag.Parse(args)
 	if labelExists(*labelName) {
 		fmt.Println("Label", *labelName, "exists")
-		fmt.Println()
+		addLabelPR(*labelName)
 		return
 	}
 	newLabel := newLabel{
