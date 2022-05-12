@@ -56,6 +56,7 @@ func SendRequest(requestType string, url string, requestBody []byte) []byte {
 	defer resp.Body.Close()
 
 	fmt.Println("Api Response: ", resp.Status)
+	fmt.Println(resp.Body)
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
