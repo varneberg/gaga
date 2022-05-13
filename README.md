@@ -44,7 +44,7 @@ jobs:
         sudo tar -C /usr/bin -xzf ./gaga.tar.gz
       
     - name: Gaga add labels
-      run: gaga -l test
+      run: gaga label -n newLabel
       env:
         GITHUB_TOKEN: ${{ github.token }}
 ```
