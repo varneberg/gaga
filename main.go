@@ -1,12 +1,8 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
+	"github.com/varneberg/gaga/labels"
 	"os"
 	"strings"
 	"time"
@@ -14,34 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	ghRepoOwner                  = os.Getenv("GITHUB_REPOSITORY_OWNER")
-	ghRef                        = os.Getenv("GITHUB_REF")
-	ghRefName                    = os.Getenv("GITHUB_REF_NAME")
-	ghRepo                       = os.Getenv("GITHUB_REPOSITORY")
-	ghToken                      = os.Getenv("GITHUB_TOKEN")
-	ghEvent                      = os.Getenv("GITHUB_EVENT_NAME")
-	ghActor                      = os.Getenv("GITHUB_ACTOR")
-	ghWorkflow                   = os.Getenv("GITHUB_WORKFLOW")
-	ghActionsIDTokenRequestURL   = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
-	ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-	ghAPIURL                     = os.Getenv("GITHUB_API_URL")
-)
 
-func listEnv() {
-	fmt.Println("Github Repo Owner: ", ghRepoOwner)
-	fmt.Println("Github Actor: ", ghActor)
-	fmt.Println("Github Ref: ", ghRef)
-	fmt.Println("Github Ref Name: ", ghRefName)
-	fmt.Println("Github API URL: ", ghAPIURL)
-	fmt.Println("Github Actions Token Request URL: ", ghActionsIDTokenRequestURL)
-	fmt.Println("Github Repo: ", ghRepo)
-	fmt.Println("Github Event: ", ghEvent)
-	fmt.Println("Github Workflow: ", ghWorkflow)
-	fmt.Println("Github Token: ", ghToken)
-	fmt.Println("Github Actions Request Token: ", ghActionsIDTokenRequestToken)
-	fmt.Printf("-----------------------\n")
-}
 
 func checkEnv() {
 	if ghEvent != "pull_request" {
@@ -50,9 +19,16 @@ func checkEnv() {
 	}
 	if ghRefName == "" {
 		fmt.Println("Error: Github Reference Name not available")
+)
+
+// Check if any input was given
+func checkArgs() {
+	if len(os.Args[1:]) == 0 {
+		fmt.Println("Error: No arguments")
 		os.Exit(0)
 	}
 }
+
 
 func parseLabel(label string) []byte {
 	var labels []string
@@ -125,3 +101,4 @@ func main() {
 	rootCmd.AddCommand(cmdLabel)
 	rootCmd.Execute()
 }
+

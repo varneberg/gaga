@@ -43,8 +43,8 @@ jobs:
         sudo curl -fL -o gaga.tar.gz https://github.com/varneberg/gaga/releases/download/v0.0.1/gaga_linux_amd64.tar.gz
         sudo tar -C /usr/bin -xzf ./gaga.tar.gz
       
-    - name: Gaga add label
-      run: gaga -l test
+    - name: Gaga add labels
+      run: gaga label -n newLabel
       env:
         GITHUB_TOKEN: ${{ github.token }}
 ```
