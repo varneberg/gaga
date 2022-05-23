@@ -147,8 +147,8 @@ func LabelHandler() {
 		Description: labelDescription,
 		Color:       labelColor,
 	}
-	//addNewLabelRepo(newLabel)
 	fmt.Println("newLabel: ", newLabel)
+	//addNewLabelRepo(newLabel)
 
 	//tail := flag.Args()
 	//fmt.Printf("Tail: %+q\n", tail)
@@ -163,5 +163,4 @@ func LabelHandler() {
 	//fmt.Println("labelColor: ", *labelColor)
 	//fmt.Println()
 	//addLabelPR(newLabel)
-
 }

@@ -42,3 +42,29 @@ func main() {
 	rootCmd.AddCommand(labels.LabelCmd)
 	rootCmd.Execute()
 }
+
+//func main() {
+//	fmt.Println()
+//
+//	var labelName string
+//	var labelColor string
+//	var labelDescription string
+//
+//	var cmdLabel = &cobra.Command{
+//		Use:   "label [label]",
+//		Short: "Label a pull request",
+//		Long:  `label is for labeling a pull request.`,
+//		Args:  cobra.MinimumNArgs(1),
+//		Run: func(cmd *cobra.Command, args []string) {
+//			postLabel(strings.Join(args, " "))
+//		},
+//	}
+//
+//	cmdLabel.Flags().StringVarP(&labelName, "name", "n", "", "label name")
+//	cmdLabel.Flags().StringVarP(&labelColor, "color", "c", "", "label color")
+//	cmdLabel.Flags().StringVarP(&labelDescription, "description", "d", "", "label description")
+//
+//	var rootCmd = &cobra.Command{Use: "app"}
+//	rootCmd.AddCommand(cmdLabel)
+//	rootCmd.Execute()
+//}

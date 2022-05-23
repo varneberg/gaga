@@ -32,12 +32,13 @@ func TestGetRepoLabels() []labelResp {
 		log.Fatal(jsonErr)
 	}
 
-	//fmt.Println("Existing test labels: ")
-	//for _, i := range resp {
-	//	fmt.Println("\t", i)
-	//}
+	fmt.Println("Existing test labels: ")
+	for _, i := range resp {
+		fmt.Println("\t", i)
+	}
 	return resp
 }
+
 func TestLabelExists(labelName string) bool {
 	labels := TestGetRepoLabels()
 	for _, elem := range labels {
