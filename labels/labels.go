@@ -130,14 +130,6 @@ func init() {
 }
 
 func LabelHandler() {
-	//labelFlag := flag.NewFlagSet("label", flag.ExitOnError)
-	//labelName := labelFlag.String("n", "", "Name new labels to add")
-	//labelDesc := labelFlag.String("d", "", "Description of labels, enclosed with \"\"")
-	//var labelColor = labelFlag.String("c", "", "Color of labels")
-	//labelFlag.Parse(args)
-	//
-	//addLabelPR(*labelName)
-
 	// Check if label already exists in repo
 	if labelExists(labelName) {
 		fmt.Println("Label", labelName, "exists")
