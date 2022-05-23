@@ -38,6 +38,7 @@ func TestGetRepoLabels() []labelResp {
 	}
 	return resp
 }
+
 func TestLabelExists(labelName string) bool {
 	labels := TestGetRepoLabels()
 	for _, elem := range labels {

@@ -2,8 +2,8 @@ package labels
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
+	"github.com/spf13/cobra"
 	"github.com/varneberg/gaga/requests"
 	"log"
 )
@@ -107,25 +107,48 @@ func toList(inputString string) []string {
 	return out
 }
 
-func LabelHandler(args []string) {
-	labelFlag := flag.NewFlagSet("label", flag.ExitOnError)
-	labelName := labelFlag.String("n", "", "Name new labels to add")
-	labelDesc := labelFlag.String("d", "", "Description of labels, enclosed with \"\"")
-	var labelColor = labelFlag.String("c", "", "Color of labels")
-	labelFlag.Parse(args)
+var LabelCmd = &cobra.Command{
+	Use:   "label [label]",
+	Short: "Label a pull request",
+	Long:  `label is for labeling a pull request.`,
+	//Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		//fmt.Println(strings.Join(args, " "))
+		//LabelHandler(strings.Join(args, " "))
+		LabelHandler()
+	},
+}
 
-	addLabelPR(*labelName)
-	if labelExists(*labelName) {
-		fmt.Println("Label", *labelName, "exists")
+var labelName string
+var labelColor string
+var labelDescription string
+
+func init() {
+	LabelCmd.Flags().StringVarP(&labelName, "name", "n", "", "label name")
+	LabelCmd.Flags().StringVarP(&labelColor, "color", "c", "", "label color")
+	LabelCmd.Flags().StringVarP(&labelDescription, "description", "d", "", "label description")
+}
+
+func LabelHandler() {
+	// Check if label already exists in repo
+	if labelExists(labelName) {
+		fmt.Println("Label", labelName, "exists")
+	}
+
+	// If color nor description is specified
+	if labelColor == "" && labelDescription == "" {
+		//fmt.Println("Color and description not set")
+		addLabelPR(labelName)
 		return
 	}
+
 	newLabel := newLabel{
-		Name:        *labelName,
-		Description: *labelDesc,
-		Color:       *labelColor,
+		Name:        labelName,
+		Description: labelDescription,
+		Color:       labelColor,
 	}
-	//addNewLabelRepo(newLabel)
 	fmt.Println("newLabel: ", newLabel)
+	//addNewLabelRepo(newLabel)
 
 	//tail := flag.Args()
 	//fmt.Printf("Tail: %+q\n", tail)
@@ -140,5 +163,4 @@ func LabelHandler(args []string) {
 	//fmt.Println("labelColor: ", *labelColor)
 	//fmt.Println()
 	//addLabelPR(newLabel)
-
 }
