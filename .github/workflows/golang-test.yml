@@ -7,20 +7,16 @@ on:
     branches: [ main ]
   issues:
     types: [opened]
-  
   workflow_dispatch:
-    
 
 permissions:
   id-token: write
   contents: write
   pull-requests: write
   issues: write
-  
 
 env:
   golang_version: '1.17.8'
-
 
 jobs:
   golang: 
@@ -47,8 +43,9 @@ jobs:
       
       - name: main.go
         run: |
-          go run main.go label -n label/test1
-          go run main.go label -n label/test2
+          go run main.go label -n label/red
+          go run main.go label -n label/blue
+          go run main.go label -r -n label/red
         env:
           GITHUB_TOKEN: ${{ github.token }}
 

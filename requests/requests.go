@@ -3,6 +3,7 @@ package requests
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -35,13 +36,12 @@ func GetPRUrl() string {
 	return ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
 }
 
-// Function for sending requests to the github API
-func SendRequest(requestMethod string, url string, requestBody []byte) []byte {
+// SendRequest Function for sending requests to the github API
+func SendRequest(requestMethod string, url string, requestBody []byte) *http.Response {
 	timeout := time.Duration(5 * time.Second)
 	client := &http.Client{
 		Timeout: timeout,
 	}
-
 	// Init request and add required headers
 	request, err := http.NewRequest(requestMethod, url, bytes.NewBuffer(requestBody))
 	request.Header.Add("Accept", "application/vnd.github.v3+json")
@@ -56,18 +56,44 @@ func SendRequest(requestMethod string, url string, requestBody []byte) []byte {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer resp.Body.Close()
+	//defer resp.Body.Close()
+	return resp
 
+	//body, err := ioutil.ReadAll(resp.Body)
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+	//
+	////status, err := ioutil.ReadAll(resp.StatusCode)
+	////fmt.Printf(string(body))
+	////fmt.Println()
+	////fmt.Println("Api Response: \n\t", resp.Status)
+	////fmt.Println("Response body: \n\t", string(body))
+	//return body
+}
+
+func closeRequest(resp *http.Response) {
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}(resp.Body)
+}
+
+func ResponseBody(resp *http.Response) []byte {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
-		os.Exit(2)
 	}
-	//fmt.Printf(string(body))
-	//fmt.Println()
-	fmt.Println("Api Response: \n\t", resp.Status)
-	fmt.Println("Response body: \n\t", string(body))
+	defer resp.Body.Close()
 	return body
+}
+
+func ResponseStatus(resp *http.Response) int {
+	status := resp.StatusCode
+	defer resp.Body.Close()
+	return status
 }
 
 func TestSendRequest(requestMethod string, url string, requestBody []byte) {
@@ -87,6 +113,5 @@ func TestSendRequest(requestMethod string, url string, requestBody []byte) {
 		fmt.Println(i)
 
 	}
-	fmt.Printf("", request)
 
 }

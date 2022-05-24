@@ -18,12 +18,6 @@ type newLabel struct {
 	Color       string `json:"color,omitempty"`
 }
 
-type changeLabel struct {
-	NewName     string `json:"new_name"` // Required to be a json array
-	Description string `json:"description,omitempty"`
-	Color       string `json:"color,omitempty"`
-}
-
 func updateLabel() {}
 
 func parseLabelName(labelName string) []byte {
@@ -36,15 +30,7 @@ func parseLabelName(labelName string) []byte {
 	return body
 }
 
-func parseNewLabel(label newLabel) []byte {
-	body, err := json.Marshal(label)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println(string(body))
-	return body
-}
-
+// Rest api response
 type labelResp struct {
 	ID          int
 	NodeId      string
@@ -55,20 +41,24 @@ type labelResp struct {
 	Description string
 }
 
+// GetRepoLabels Get all labels defined within a repository
 func GetRepoLabels() []labelResp {
 	url := requests.GetRepoUrl()
-	body := requests.SendRequest("GET", url, nil)
-	if body == nil {
-		fmt.Println("Unable to fetch labels")
-	}
-	var resp []labelResp
-	jsonErr := json.Unmarshal(body, &resp)
+	response := requests.SendRequest("GET", url, nil)
+	//if body == nil {
+	//	fmt.Println("Unable to fetch labels")
+	//}
+	var lresp []labelResp
+
+	body := requests.ResponseBody(response)
+	jsonErr := json.Unmarshal(body, &lresp)
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
 	}
-	return resp
+	return lresp
 }
 
+// Check if label already exist in repository
 func labelExists(labelName string) bool {
 	labels := GetRepoLabels()
 	for _, elem := range labels {
@@ -81,30 +71,35 @@ func labelExists(labelName string) bool {
 
 // Adds labels to current pull request
 func addLabelPR(labelName string) {
-	//requestBody := parseNewLabel(labelName)
-	//var body, err = json.Marshal(map[string]string{
-	//	"labels": labelName,
-	//})
-	////body, err := json.Marshal(labelName)
-	//fmt.Println("Request body: \n", string(body))
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-
 	url := requests.GetPRUrl()
 	body := parseLabelName(labelName)
 	fmt.Println("Api Request Body: ", string(body))
 	requests.SendRequest("POST", url, body)
 }
 
-func addNewLabelRepo(label newLabel) {
-
-}
-
 func toList(inputString string) []string {
 	var out []string
 	out = append(out, inputString)
 	return out
+}
+
+func removeLabel(labelname string) {
+	url := requests.GetPRUrl()
+	var body []byte
+	resp := requests.SendRequest("DELETE", url, body)
+	fmt.Println(requests.ResponseStatus(resp))
+	fmt.Println(requests.ResponseBody(resp))
+	fmt.Println()
+}
+
+// Remove all labels from a pull request
+func removeAllLabels() {
+	url := requests.GetPRUrl()
+	var body []byte
+	resp := requests.SendRequest("DELETE", url, body)
+	fmt.Println(requests.ResponseStatus(resp))
+	fmt.Println(requests.ResponseBody(resp))
+	fmt.Println()
 }
 
 var LabelCmd = &cobra.Command{
@@ -122,14 +117,27 @@ var LabelCmd = &cobra.Command{
 var labelName string
 var labelColor string
 var labelDescription string
+var labelRemove bool
+var removeAll bool
 
 func init() {
-	LabelCmd.Flags().StringVarP(&labelName, "name", "n", "", "label name")
-	LabelCmd.Flags().StringVarP(&labelColor, "color", "c", "", "label color")
-	LabelCmd.Flags().StringVarP(&labelDescription, "description", "d", "", "label description")
+	LabelCmd.Flags().StringVarP(&labelName, "name", "n", "", "Label name")
+	LabelCmd.Flags().StringVarP(&labelColor, "color", "c", "", "Label color")
+	LabelCmd.Flags().StringVarP(&labelDescription, "description", "d", "", "Label description")
+	LabelCmd.PersistentFlags().BoolVarP(&labelRemove, "remove", "r", false, "Remove a label")
+	LabelCmd.PersistentFlags().BoolVarP(&removeAll, "remove-all", "R", false, "Remove all current labels on PR")
 }
 
 func LabelHandler() {
+
+	if labelRemove {
+		removeLabel(labelName)
+	}
+
+	if removeAll {
+		removeAllLabels()
+	}
+
 	// Check if label already exists in repo
 	if labelExists(labelName) {
 		fmt.Println("Label", labelName, "exists")
