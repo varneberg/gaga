@@ -74,7 +74,7 @@ func addLabelPR(labelName string) {
 	fmt.Println("Api Request Body: ", string(body))
 	response := requests.SendRequest("POST", url, body)
 	fmt.Println(requests.ResponseStatus(response))
-	fmt.Println(requests.ResponseBody(response))
+	fmt.Println(string(requests.ResponseBody(response)))
 	requests.CloseRequest(response)
 }
 
@@ -89,7 +89,7 @@ func removeLabel(labelname string) {
 	var body []byte
 	resp := requests.SendRequest("DELETE", url, body)
 	fmt.Println(requests.ResponseStatus(resp))
-	fmt.Println(requests.ResponseBody(resp))
+	fmt.Println(string(requests.ResponseBody(resp)))
 	requests.CloseRequest(resp)
 	fmt.Println()
 }
@@ -100,7 +100,7 @@ func removeAllLabels() {
 	var body []byte
 	resp := requests.SendRequest("DELETE", url, body)
 	fmt.Println(requests.ResponseStatus(resp))
-	fmt.Println(requests.ResponseBody(resp))
+	fmt.Println(string(requests.ResponseBody(resp)))
 	requests.CloseRequest(resp)
 	fmt.Println()
 }
