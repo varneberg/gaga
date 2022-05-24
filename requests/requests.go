@@ -3,6 +3,7 @@ package requests
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -55,7 +56,7 @@ func SendRequest(requestMethod string, url string, requestBody []byte) *http.Res
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer resp.Body.Close()
+	//defer resp.Body.Close()
 	return resp
 
 	//body, err := ioutil.ReadAll(resp.Body)
@@ -71,16 +72,27 @@ func SendRequest(requestMethod string, url string, requestBody []byte) *http.Res
 	//return body
 }
 
+func closeRequest(resp *http.Response) {
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}(resp.Body)
+}
+
 func ResponseBody(resp *http.Response) []byte {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer resp.Body.Close()
 	return body
 }
 
 func ResponseStatus(resp *http.Response) int {
 	status := resp.StatusCode
+	defer resp.Body.Close()
 	return status
 }
 
