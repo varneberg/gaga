@@ -16,6 +16,8 @@ func checkArgs() {
 	}
 }
 
+func init() {}
+
 func main() {
 	//checkEnv()
 	checkArgs()

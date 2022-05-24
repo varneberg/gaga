@@ -30,15 +30,7 @@ func parseLabelName(labelName string) []byte {
 	return body
 }
 
-func parseNewLabel(label newLabel) []byte {
-	body, err := json.Marshal(label)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println(string(body))
-	return body
-}
-
+// Rest api response
 type labelResp struct {
 	ID          int
 	NodeId      string
@@ -52,16 +44,18 @@ type labelResp struct {
 // GetRepoLabels Get all labels defined within a repository
 func GetRepoLabels() []labelResp {
 	url := requests.GetRepoUrl()
-	body := requests.SendRequest("GET", url, nil)
-	if body == nil {
-		fmt.Println("Unable to fetch labels")
-	}
-	var resp []labelResp
-	jsonErr := json.Unmarshal(body, &resp)
+	response := requests.SendRequest("GET", url, nil)
+	//if body == nil {
+	//	fmt.Println("Unable to fetch labels")
+	//}
+	var lresp []labelResp
+
+	body := requests.ResponseBody(response)
+	jsonErr := json.Unmarshal(body, &lresp)
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
 	}
-	return resp
+	return lresp
 }
 
 // Check if label already exist in repository
@@ -83,22 +77,29 @@ func addLabelPR(labelName string) {
 	requests.SendRequest("POST", url, body)
 }
 
-func addNewLabelRepo(label newLabel) {
-
-}
-
 func toList(inputString string) []string {
 	var out []string
 	out = append(out, inputString)
 	return out
 }
 
-// Remove all labels from a pull request
-func removeAllLabels() []byte {
+func removeLabel(labelname string) {
 	url := requests.GetPRUrl()
 	var body []byte
-	response := requests.SendRequest("DELETE", url, body)
-	return response
+	resp := requests.SendRequest("DELETE", url, body)
+	fmt.Println(requests.ResponseStatus(resp))
+	fmt.Println(requests.ResponseBody(resp))
+	fmt.Println()
+}
+
+// Remove all labels from a pull request
+func removeAllLabels() {
+	url := requests.GetPRUrl()
+	var body []byte
+	resp := requests.SendRequest("DELETE", url, body)
+	fmt.Println(requests.ResponseStatus(resp))
+	fmt.Println(requests.ResponseBody(resp))
+	fmt.Println()
 }
 
 var LabelCmd = &cobra.Command{
@@ -116,17 +117,23 @@ var LabelCmd = &cobra.Command{
 var labelName string
 var labelColor string
 var labelDescription string
+var labelRemove bool
 var removeAll bool
 
 func init() {
 	LabelCmd.Flags().StringVarP(&labelName, "name", "n", "", "Label name")
 	LabelCmd.Flags().StringVarP(&labelColor, "color", "c", "", "Label color")
 	LabelCmd.Flags().StringVarP(&labelDescription, "description", "d", "", "Label description")
+	LabelCmd.PersistentFlags().BoolVarP(&labelRemove, "remove", "r", false, "Remove a label")
 	LabelCmd.PersistentFlags().BoolVarP(&removeAll, "remove-all", "R", false, "Remove all current labels on PR")
-
 }
 
 func LabelHandler() {
+
+	if labelRemove {
+		removeLabel(labelName)
+	}
+
 	if removeAll {
 		removeAllLabels()
 	}

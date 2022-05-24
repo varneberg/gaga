@@ -36,7 +36,7 @@ func GetPRUrl() string {
 }
 
 // SendRequest Function for sending requests to the github API
-func SendRequest(requestMethod string, url string, requestBody []byte) []byte {
+func SendRequest(requestMethod string, url string, requestBody []byte) *http.Response {
 	timeout := time.Duration(5 * time.Second)
 	client := &http.Client{
 		Timeout: timeout,
@@ -56,17 +56,32 @@ func SendRequest(requestMethod string, url string, requestBody []byte) []byte {
 		log.Fatalln(err)
 	}
 	defer resp.Body.Close()
+	return resp
 
+	//body, err := ioutil.ReadAll(resp.Body)
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+	//
+	////status, err := ioutil.ReadAll(resp.StatusCode)
+	////fmt.Printf(string(body))
+	////fmt.Println()
+	////fmt.Println("Api Response: \n\t", resp.Status)
+	////fmt.Println("Response body: \n\t", string(body))
+	//return body
+}
+
+func ResponseBody(resp *http.Response) []byte {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
-		os.Exit(2)
 	}
-	//fmt.Printf(string(body))
-	//fmt.Println()
-	fmt.Println("Api Response: \n\t", resp.Status)
-	fmt.Println("Response body: \n\t", string(body))
 	return body
+}
+
+func ResponseStatus(resp *http.Response) int {
+	status := resp.StatusCode
+	return status
 }
 
 func TestSendRequest(requestMethod string, url string, requestBody []byte) {
