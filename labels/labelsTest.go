@@ -2,7 +2,6 @@ package labels
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"github.com/varneberg/gaga/requests"
 	"log"
@@ -57,20 +56,21 @@ func TestAddLabelPR(labelName string) {
 }
 
 func TestLabelHandler(args []string) {
-	labelFlag := flag.NewFlagSet("label", flag.ExitOnError)
-	labelName := labelFlag.String("n", "", "Name new labels to add")
-	labelDesc := labelFlag.String("d", "", "Description of labels, enclosed with \"\"")
-	var labelColor = labelFlag.String("c", "", "Color of labels")
-	labelFlag.Parse(args)
-	if TestLabelExists(*labelName) {
-		fmt.Println("Label", *labelName, "exists")
-		TestAddLabelPR(*labelName)
+
+	if labelExists(labelName) {
+		fmt.Println("Label", labelName, "exists")
+	}
+
+	// If color nor description is specified
+	if labelColor == "" && labelDescription == "" {
+		//fmt.Println("Color and description not set")
+		addLabelPR(labelName)
 		return
 	}
 	newLabel := newLabel{
-		Name:        *labelName,
-		Description: *labelDesc,
-		Color:       *labelColor,
+		Name:        labelName,
+		Description: labelDescription,
+		Color:       labelColor,
 	}
 	//addNewLabelRepo(newLabel)
 	fmt.Println("newLabel: ", newLabel)

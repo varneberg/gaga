@@ -81,16 +81,6 @@ func labelExists(labelName string) bool {
 
 // Adds labels to current pull request
 func addLabelPR(labelName string) {
-	//requestBody := parseNewLabel(labelName)
-	//var body, err = json.Marshal(map[string]string{
-	//	"labels": labelName,
-	//})
-	////body, err := json.Marshal(labelName)
-	//fmt.Println("Request body: \n", string(body))
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-
 	url := requests.GetPRUrl()
 	body := parseLabelName(labelName)
 	fmt.Println("Api Request Body: ", string(body))
