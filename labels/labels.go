@@ -18,12 +18,6 @@ type newLabel struct {
 	Color       string `json:"color,omitempty"`
 }
 
-type changeLabel struct {
-	NewName     string `json:"new_name"` // Required to be a json array
-	Description string `json:"description,omitempty"`
-	Color       string `json:"color,omitempty"`
-}
-
 func updateLabel() {}
 
 func parseLabelName(labelName string) []byte {
@@ -55,6 +49,7 @@ type labelResp struct {
 	Description string
 }
 
+// GetRepoLabels Get all labels defined within a repository
 func GetRepoLabels() []labelResp {
 	url := requests.GetRepoUrl()
 	body := requests.SendRequest("GET", url, nil)
@@ -69,6 +64,7 @@ func GetRepoLabels() []labelResp {
 	return resp
 }
 
+// Check if label already exist in repository
 func labelExists(labelName string) bool {
 	labels := GetRepoLabels()
 	for _, elem := range labels {
@@ -97,6 +93,14 @@ func toList(inputString string) []string {
 	return out
 }
 
+// Remove all labels from a pull request
+func removeAllLabels() []byte {
+	url := requests.GetPRUrl()
+	var body []byte
+	response := requests.SendRequest("PUT", url, body)
+	return response
+}
+
 var LabelCmd = &cobra.Command{
 	Use:   "label [label]",
 	Short: "Label a pull request",
@@ -112,11 +116,14 @@ var LabelCmd = &cobra.Command{
 var labelName string
 var labelColor string
 var labelDescription string
+var removeAll bool
 
 func init() {
-	LabelCmd.Flags().StringVarP(&labelName, "name", "n", "", "label name")
-	LabelCmd.Flags().StringVarP(&labelColor, "color", "c", "", "label color")
-	LabelCmd.Flags().StringVarP(&labelDescription, "description", "d", "", "label description")
+	LabelCmd.Flags().StringVarP(&labelName, "name", "n", "", "Label name")
+	LabelCmd.Flags().StringVarP(&labelColor, "color", "c", "", "Label color")
+	LabelCmd.Flags().StringVarP(&labelDescription, "description", "d", "", "Label description")
+	LabelCmd.Flags().BoolVarP(&removeAll, "remove-all", "R", false, "Remove all current labels on PR")
+
 }
 
 func LabelHandler() {

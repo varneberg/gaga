@@ -35,13 +35,12 @@ func GetPRUrl() string {
 	return ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
 }
 
-// Function for sending requests to the github API
+// SendRequest Function for sending requests to the github API
 func SendRequest(requestMethod string, url string, requestBody []byte) []byte {
 	timeout := time.Duration(5 * time.Second)
 	client := &http.Client{
 		Timeout: timeout,
 	}
-
 	// Init request and add required headers
 	request, err := http.NewRequest(requestMethod, url, bytes.NewBuffer(requestBody))
 	request.Header.Add("Accept", "application/vnd.github.v3+json")
@@ -87,6 +86,5 @@ func TestSendRequest(requestMethod string, url string, requestBody []byte) {
 		fmt.Println(i)
 
 	}
-	fmt.Printf("", request)
 
 }
