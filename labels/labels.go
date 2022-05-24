@@ -97,7 +97,7 @@ func toList(inputString string) []string {
 func removeAllLabels() []byte {
 	url := requests.GetPRUrl()
 	var body []byte
-	response := requests.SendRequest("PUT", url, body)
+	response := requests.SendRequest("DELETE", url, body)
 	return response
 }
 
@@ -122,11 +122,15 @@ func init() {
 	LabelCmd.Flags().StringVarP(&labelName, "name", "n", "", "Label name")
 	LabelCmd.Flags().StringVarP(&labelColor, "color", "c", "", "Label color")
 	LabelCmd.Flags().StringVarP(&labelDescription, "description", "d", "", "Label description")
-	LabelCmd.Flags().BoolVarP(&removeAll, "remove-all", "R", false, "Remove all current labels on PR")
+	LabelCmd.PersistentFlags().BoolVarP(&removeAll, "remove-all", "R", false, "Remove all current labels on PR")
 
 }
 
 func LabelHandler() {
+	if removeAll {
+		removeAllLabels()
+	}
+
 	// Check if label already exists in repo
 	if labelExists(labelName) {
 		fmt.Println("Label", labelName, "exists")
