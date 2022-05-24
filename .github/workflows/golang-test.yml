@@ -44,7 +44,7 @@ jobs:
       - name: main.go
         run: |
           go run main.go label -n label/red
-          go run main.go label -n label/blue
+          go run main.go label -R
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
