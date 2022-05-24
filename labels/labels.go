@@ -45,12 +45,10 @@ type labelResp struct {
 func GetRepoLabels() []labelResp {
 	url := requests.GetRepoUrl()
 	response := requests.SendRequest("GET", url, nil)
-	//if body == nil {
-	//	fmt.Println("Unable to fetch labels")
-	//}
-	var lresp []labelResp
-
 	body := requests.ResponseBody(response)
+	requests.CloseRequest(response)
+
+	var lresp []labelResp
 	jsonErr := json.Unmarshal(body, &lresp)
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
@@ -74,7 +72,10 @@ func addLabelPR(labelName string) {
 	url := requests.GetPRUrl()
 	body := parseLabelName(labelName)
 	fmt.Println("Api Request Body: ", string(body))
-	requests.SendRequest("POST", url, body)
+	response := requests.SendRequest("POST", url, body)
+	fmt.Println(requests.ResponseStatus(response))
+	fmt.Println(requests.ResponseBody(response))
+	requests.CloseRequest(response)
 }
 
 func toList(inputString string) []string {
@@ -89,6 +90,7 @@ func removeLabel(labelname string) {
 	resp := requests.SendRequest("DELETE", url, body)
 	fmt.Println(requests.ResponseStatus(resp))
 	fmt.Println(requests.ResponseBody(resp))
+	requests.CloseRequest(resp)
 	fmt.Println()
 }
 
@@ -99,6 +101,7 @@ func removeAllLabels() {
 	resp := requests.SendRequest("DELETE", url, body)
 	fmt.Println(requests.ResponseStatus(resp))
 	fmt.Println(requests.ResponseBody(resp))
+	requests.CloseRequest(resp)
 	fmt.Println()
 }
 

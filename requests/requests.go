@@ -72,7 +72,7 @@ func SendRequest(requestMethod string, url string, requestBody []byte) *http.Res
 	//return body
 }
 
-func closeRequest(resp *http.Response) {
+func CloseRequest(resp *http.Response) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
@@ -86,13 +86,13 @@ func ResponseBody(resp *http.Response) []byte {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer resp.Body.Close()
+	//closeRequest(resp)
 	return body
 }
 
 func ResponseStatus(resp *http.Response) int {
 	status := resp.StatusCode
-	defer resp.Body.Close()
+	//closeRequest(resp)
 	return status
 }
 
