@@ -71,7 +71,7 @@ func labelExists(labelName string) bool {
 func addLabelPR(labelName string) {
 	url := requests.GetPRUrl()
 	body := parseLabelName(labelName)
-	fmt.Println("Api Request Body: ", string(body))
+	fmt.Println("Api Request Body: ", body)
 	status, resp := requests.SendRequest("POST", url, body)
 	//fmt.Println(requests.ResponseStatus(response))
 	//fmt.Println(string(requests.ResponseBody(response)))
