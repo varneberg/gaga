@@ -85,10 +85,11 @@ func toList(inputString string) []string {
 	return out
 }
 
-func removeLabel(labelname string) {
+func removeLabel(labelName string) {
 	url := requests.GetPRUrl()
 	//var body []byte
-	status, body := requests.SendRequest("DELETE", url, []byte(labelname))
+	body := parseLabelName(labelName)
+	status, body := requests.SendRequest("DELETE", url, body)
 	fmt.Println(status, "\n", string(body))
 }
 
