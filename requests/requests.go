@@ -3,7 +3,6 @@ package requests
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -37,7 +36,7 @@ func GetPRUrl() string {
 }
 
 // SendRequest Function for sending requests to the github API
-func SendRequest(requestMethod string, url string, requestBody []byte) *http.Response {
+func SendRequest(requestMethod string, url string, requestBody []byte) (int, []byte) {
 	timeout := time.Duration(5 * time.Second)
 	client := &http.Client{
 		Timeout: timeout,
@@ -56,44 +55,27 @@ func SendRequest(requestMethod string, url string, requestBody []byte) *http.Res
 	if err != nil {
 		log.Fatalln(err)
 	}
-	//defer resp.Body.Close()
-	return resp
+	defer resp.Body.Close()
 
-	//body, err := ioutil.ReadAll(resp.Body)
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-	//
-	////status, err := ioutil.ReadAll(resp.StatusCode)
-	////fmt.Printf(string(body))
-	////fmt.Println()
-	////fmt.Println("Api Response: \n\t", resp.Status)
-	////fmt.Println("Response body: \n\t", string(body))
-	//return body
-}
-
-func closeRequest(resp *http.Response) {
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}(resp.Body)
-}
-
-func ResponseBody(resp *http.Response) []byte {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer resp.Body.Close()
-	return body
+
+	statusCode := resp.StatusCode
+	//status := resp.Status
+	//fmt.Printf(string(body))
+	////fmt.Println()
+	////fmt.Println("Api Response: \n\t", resp.Status)
+	////fmt.Println("Response body: \n\t", string(body))
+	return statusCode, body
 }
 
-func ResponseStatus(resp *http.Response) int {
-	status := resp.StatusCode
-	defer resp.Body.Close()
-	return status
+func PrintResponse(status int, response []byte) {
+	fmt.Println(">> ", status)
+	fmt.Println("\t", string(response))
+	fmt.Println()
+
 }
 
 func TestSendRequest(requestMethod string, url string, requestBody []byte) {

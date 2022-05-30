@@ -13,7 +13,7 @@ import (
 
 // New label object
 type newLabel struct {
-	Name        string `json:"labels"` // Required to be a json array
+	Name        string `json:"name"` // Required to be a json array
 	Description string `json:"description,omitempty"`
 	Color       string `json:"color,omitempty"`
 }
@@ -44,13 +44,11 @@ type labelResp struct {
 // GetRepoLabels Get all labels defined within a repository
 func GetRepoLabels() []labelResp {
 	url := requests.GetRepoUrl()
-	response := requests.SendRequest("GET", url, nil)
-	//if body == nil {
-	//	fmt.Println("Unable to fetch labels")
-	//}
-	var lresp []labelResp
+	_, body := requests.SendRequest("GET", url, nil)
+	//body := requestBodyuests.ResponseBody(response)
+	//requests.CloseRequest(response)
 
-	body := requests.ResponseBody(response)
+	var lresp []labelResp
 	jsonErr := json.Unmarshal(body, &lresp)
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
@@ -74,7 +72,12 @@ func addLabelPR(labelName string) {
 	url := requests.GetPRUrl()
 	body := parseLabelName(labelName)
 	fmt.Println("Api Request Body: ", string(body))
-	requests.SendRequest("POST", url, body)
+	status, resp := requests.SendRequest("POST", url, body)
+	//fmt.Println(requests.ResponseStatus(response))
+	//fmt.Println(string(requests.ResponseBody(response)))
+	//requests.CloseRequest(response)
+	//fmt.Println(status, "\n", string(resp))
+	requests.PrintResponse(status, resp)
 }
 
 func toList(inputString string) []string {
@@ -83,24 +86,47 @@ func toList(inputString string) []string {
 	return out
 }
 
-func removeLabel(labelname string) {
+func removeLabel(labelName string) {
 	url := requests.GetPRUrl()
-	var body []byte
-	resp := requests.SendRequest("DELETE", url, body)
-	fmt.Println(requests.ResponseStatus(resp))
-	fmt.Println(requests.ResponseBody(resp))
-	fmt.Println()
+	//var body []byte
+	body := parseLabelName(labelName)
+	status, body := requests.SendRequest("DELETE", url, body)
+	requests.PrintResponse(status, body)
 }
 
 // Remove all labels from a pull request
 func removeAllLabels() {
 	url := requests.GetPRUrl()
-	var body []byte
-	resp := requests.SendRequest("DELETE", url, body)
-	fmt.Println(requests.ResponseStatus(resp))
-	fmt.Println(requests.ResponseBody(resp))
-	fmt.Println()
+	//var body []byte
+	status, body := requests.SendRequest("DELETE", url, nil)
+	//fmt.Println(status, "\n", string(body))
+	requests.PrintResponse(status, body)
 }
+
+func createNewLabel(label newLabel) {
+	if labelExists(label.Name) {
+		addLabelPR(label.Name)
+		return
+	}
+	url := requests.GetRepoUrl()
+	var body, err = json.Marshal(newLabel{
+		Name:        label.Name,
+		Description: label.Description,
+		Color:       label.Color,
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	status, respbody := requests.SendRequest("POST", url, body)
+	requests.PrintResponse(status, respbody)
+	addLabelPR(label.Name)
+}
+
+var labelName string
+var labelColor string
+var labelDescription string
+var labelRemove bool
+var removeAll bool
 
 var LabelCmd = &cobra.Command{
 	Use:   "label [label]",
@@ -113,12 +139,6 @@ var LabelCmd = &cobra.Command{
 		LabelHandler()
 	},
 }
-
-var labelName string
-var labelColor string
-var labelDescription string
-var labelRemove bool
-var removeAll bool
 
 func init() {
 	LabelCmd.Flags().StringVarP(&labelName, "name", "n", "", "Label name")
@@ -133,28 +153,28 @@ func LabelHandler() {
 	if labelRemove {
 		removeLabel(labelName)
 	}
-
 	if removeAll {
 		removeAllLabels()
 	}
 
 	// Check if label already exists in repo
-	if labelExists(labelName) {
-		fmt.Println("Label", labelName, "exists")
-	}
+	//if labelExists(labelName) {
+	//	fmt.Println("Label", labelName, "exists")
+	//}
 
 	// If color nor description is specified
+
 	if labelColor == "" && labelDescription == "" {
 		//fmt.Println("Color and description not set")
 		addLabelPR(labelName)
 		return
 	}
-
 	newLabel := newLabel{
 		Name:        labelName,
 		Description: labelDescription,
 		Color:       labelColor,
 	}
+	createNewLabel(newLabel)
 	fmt.Println("newLabel: ", newLabel)
 	//addNewLabelRepo(newLabel)
 

@@ -21,7 +21,6 @@ func init() {}
 func main() {
 	//checkEnv()
 	checkArgs()
-	fmt.Println()
 	var rootCmd = &cobra.Command{Use: "app"}
 	rootCmd.AddCommand(labels.LabelCmd)
 	rootCmd.Execute()
