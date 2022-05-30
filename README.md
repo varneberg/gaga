@@ -1,4 +1,4 @@
-# Golang Automator for Github Actions
+# Gaga
 ## Motivation
 Gaga is a CLI-tool intended to perform different functions inside a Github Actions Workflow. No additional authentication is required thanks to gaga being authenticated with the same permissions as the Workflow it is called from.
 
