@@ -119,7 +119,7 @@ func createNewLabel(label newLabel) {
 	}
 	status, respbody := requests.SendRequest("POST", url, body)
 	requests.PrintResponse(status, respbody)
-
+	addLabelPR(label.Name)
 }
 
 var labelName string
