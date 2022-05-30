@@ -71,12 +71,13 @@ func labelExists(labelName string) bool {
 func addLabelPR(labelName string) {
 	url := requests.GetPRUrl()
 	body := parseLabelName(labelName)
-	fmt.Println("Api Request Body: ", body)
+	fmt.Println("Api Request Body: ", string(body))
 	status, resp := requests.SendRequest("POST", url, body)
 	//fmt.Println(requests.ResponseStatus(response))
 	//fmt.Println(string(requests.ResponseBody(response)))
 	//requests.CloseRequest(response)
-	fmt.Println(status, "\n", string(resp))
+	//fmt.Println(status, "\n", string(resp))
+	requests.PrintResponse(status, resp)
 }
 
 func toList(inputString string) []string {
@@ -90,7 +91,7 @@ func removeLabel(labelName string) {
 	//var body []byte
 	body := parseLabelName(labelName)
 	status, body := requests.SendRequest("DELETE", url, body)
-	fmt.Println(status, "\n", string(body))
+	requests.PrintResponse(status, body)
 }
 
 // Remove all labels from a pull request
@@ -98,7 +99,8 @@ func removeAllLabels() {
 	url := requests.GetPRUrl()
 	//var body []byte
 	status, body := requests.SendRequest("DELETE", url, nil)
-	fmt.Println(status, "\n", string(body))
+	//fmt.Println(status, "\n", string(body))
+	requests.PrintResponse(status, body)
 	fmt.Println()
 }
 

@@ -62,27 +62,20 @@ func SendRequest(requestMethod string, url string, requestBody []byte) (int, []b
 		log.Fatalln(err)
 	}
 
-	status := resp.StatusCode
+	statusCode := resp.StatusCode
+	//status := resp.Status
 	//fmt.Printf(string(body))
 	////fmt.Println()
 	////fmt.Println("Api Response: \n\t", resp.Status)
 	////fmt.Println("Response body: \n\t", string(body))
-	return status, body
+	return statusCode, body
 }
 
-func ResponseBody(resp *http.Response) []byte {
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	//closeRequest(resp)
-	return body
-}
+func PrintResponse(status int, response []byte) {
+	fmt.Println()
+	fmt.Println("\t>> ", status)
+	fmt.Println("\t", string(response))
 
-func ResponseStatus(resp *http.Response) int {
-	status := resp.StatusCode
-	//closeRequest(resp)
-	return status
 }
 
 func TestSendRequest(requestMethod string, url string, requestBody []byte) {
