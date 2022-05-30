@@ -72,9 +72,9 @@ func SendRequest(requestMethod string, url string, requestBody []byte) (int, []b
 }
 
 func PrintResponse(status int, response []byte) {
-	fmt.Println()
-	fmt.Println("\t>> ", status)
+	fmt.Println(">> ", status)
 	fmt.Println("\t", string(response))
+	fmt.Println()
 
 }
 

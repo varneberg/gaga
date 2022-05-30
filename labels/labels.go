@@ -13,7 +13,7 @@ import (
 
 // New label object
 type newLabel struct {
-	Name        string `json:"labels"` // Required to be a json array
+	Name        string `json:"name"` // Required to be a json array
 	Description string `json:"description,omitempty"`
 	Color       string `json:"color,omitempty"`
 }
@@ -101,13 +101,25 @@ func removeAllLabels() {
 	status, body := requests.SendRequest("DELETE", url, nil)
 	//fmt.Println(status, "\n", string(body))
 	requests.PrintResponse(status, body)
-	fmt.Println()
 }
 
 func createNewLabel(label newLabel) {
 	if labelExists(label.Name) {
-
+		addLabelPR(label.Name)
+		return
 	}
+	url := requests.GetRepoUrl()
+	var body, err = json.Marshal(newLabel{
+		Name:        label.Name,
+		Description: label.Description,
+		Color:       label.Color,
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	status, respbody := requests.SendRequest("POST", url, body)
+	requests.PrintResponse(status, respbody)
+
 }
 
 var labelName string
