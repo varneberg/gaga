@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// Read unix pipe
 func ReadPipeInput() string {
 	nBytes, nChunks := int64(0), int64(0)
 	r := bufio.NewReader(os.Stdin)
@@ -35,3 +36,22 @@ func ReadPipeInput() string {
 	//fmt.Println("Bytes:", nBytes, "Chunks:", nChunks)
 	return out
 }
+
+// func ParseTerraformPlan() {
+// 	tfplan := ReadPipeInput()
+// 	// fmt.Println(tfplan)
+// 	toSlice := strings.Split(tfplan, "\n")
+// 	// fmt.Println(toSlice)
+// 	// found := false
+	
+// 	// var out []string
+// 	for i, line := range toSlice{
+// 		// Separator used in Terraform plan
+// 		if strings.Contains(line, "─────────────────────────────────────────────────────────────────────────────"){
+// 			fmt.Println(toSlice[i+1:len(toSlice)-4])
+// 			// fmt.Println(len(toSlice))
+// 			// fmt.Println(toSlice[777])
+// 			break
+// 		}
+// 	}
+// }
