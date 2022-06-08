@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/varneberg/gaga/labels"
+
 	//"github.com/varneberg/gaga/labels"
 	"os"
 )
@@ -19,9 +20,10 @@ func checkArgs() {
 func init() {}
 
 func main() {
-	//checkEnv()
 	checkArgs()
 	var rootCmd = &cobra.Command{Use: "app"}
 	rootCmd.AddCommand(labels.LabelCmd)
+	rootCmd.AddCommand(labels.TFCmd)
 	rootCmd.Execute()
+
 }

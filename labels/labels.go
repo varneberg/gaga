@@ -68,7 +68,7 @@ func labelExists(labelName string) bool {
 }
 
 // Adds labels to current pull request
-func addLabelPR(labelName string) {
+func AddLabelPR(labelName string) {
 	url := requests.GetPRUrl()
 	body := parseLabelName(labelName)
 	fmt.Println("Api Request Body: ", string(body))
@@ -105,7 +105,7 @@ func removeAllLabels() {
 
 func createNewLabel(label newLabel) {
 	if labelExists(label.Name) {
-		addLabelPR(label.Name)
+		AddLabelPR(label.Name)
 		return
 	}
 	url := requests.GetRepoUrl()
@@ -119,7 +119,7 @@ func createNewLabel(label newLabel) {
 	}
 	status, respbody := requests.SendRequest("POST", url, body)
 	requests.PrintResponse(status, respbody)
-	addLabelPR(label.Name)
+	AddLabelPR(label.Name)
 }
 
 var labelName string
@@ -157,16 +157,11 @@ func LabelHandler() {
 		removeAllLabels()
 	}
 
-	// Check if label already exists in repo
-	//if labelExists(labelName) {
-	//	fmt.Println("Label", labelName, "exists")
-	//}
-
 	// If color nor description is specified
 
 	if labelColor == "" && labelDescription == "" {
 		//fmt.Println("Color and description not set")
-		addLabelPR(labelName)
+		AddLabelPR(labelName)
 		return
 	}
 	newLabel := newLabel{
