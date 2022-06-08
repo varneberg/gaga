@@ -2,6 +2,8 @@ package labels
 
 import (
 	"fmt"
+	"log"
+	"regexp"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -18,20 +20,19 @@ var TFCmd = &cobra.Command{
 	},
 }
 
-
 type tfResult struct {
 	Details []string
 	Changes string
 }
 
-func parseTerraformPlan() tfResult{
+func parseTerraformPlan() tfResult {
 	tfplan := parser.ReadPipeInput()
 	toSlice := strings.Split(tfplan, "\n")
 	var out []string
-	for i, line := range toSlice{
+	for i, line := range toSlice {
 		// Separator used in Terraform plan
-		if strings.Contains(line, "─────────────────────────────────────────────────────────────────────────────"){
-			out = toSlice[i+1:len(toSlice)-4]
+		if strings.Contains(line, "─────────────────────────────────────────────────────────────────────────────") {
+			out = toSlice[i+1 : len(toSlice)-4]
 			break
 		}
 	}
@@ -41,10 +42,44 @@ func parseTerraformPlan() tfResult{
 	return result
 }
 
+func getPlanResults() {
+	tfplan := parser.ReadPipeInput()
+	//s := "Plan: 9 to add, 0 to change, 0 to destroy."
+	re, err := regexp.Compile(`Plan: [\w] to add, [\w] to change, [\w] to destroy`)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	newChanges := re.FindString(tfplan)
+	if newChanges == "" {
+		AddLabelPR(labelNoChanges)
+		return
+	}
+	parsed := strings.Trim(newChanges, "Plan: ")
+	split := strings.Split(parsed, ", ")
+	fmt.Println(split)
+	for _, s := range split {
+		diff := string(s[0])
+		action := strings.Split(s, " ")[2]
+		if diff != "0" {
+			switch action {
+			case "add":
+				AddLabelPR(labelAddUpdate)
+			case "destroy":
+				AddLabelPR(labelDestroy)
+			case "error":
+				AddLabelPR(labelError)
 
-func handlePlanResult(){
-	newResult := parseTerraformPlan()
-	fmt.Println(newResult.Changes)
+			}
+		}
+
+	}
+
+}
+
+func handlePlanResult() {
+	//newResult := parseTerraformPlan()
+	//fmt.Println(newResult.Changes)
+	getPlanResults()
 
 }
 
@@ -67,7 +102,7 @@ func init() {
 }
 
 func terraformHandler() {
-	// planResult := parseTerraformPlan()	
+	// planResult := parseTerraformPlan()
 	// fmt.Println(planResult)
 	handlePlanResult()
 }
