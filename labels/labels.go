@@ -157,11 +157,6 @@ func LabelHandler() {
 		removeAllLabels()
 	}
 
-	// Check if label already exists in repo
-	//if labelExists(labelName) {
-	//	fmt.Println("Label", labelName, "exists")
-	//}
-
 	// If color nor description is specified
 
 	if labelColor == "" && labelDescription == "" {

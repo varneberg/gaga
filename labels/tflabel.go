@@ -71,14 +71,10 @@ func getPlanResults() {
 
 			}
 		}
-
 	}
-
 }
 
 func handlePlanResult() {
-	//newResult := parseTerraformPlan()
-	//fmt.Println(newResult.Changes)
 	getPlanResults()
 
 }
@@ -96,13 +92,9 @@ func init() {
 	TFCmd.Flags().StringVarP(&labelNoChanges, "label-no-changes", "n", "tf/no-changes", "Terraform no changes label name")
 	TFCmd.Flags().StringVarP(&labelError, "label-error", "e", "tf/error", "Terraform error label name")
 
-	// Terraform plan input options
-	// TFCmd.Flags().BoolVarP(&readPipe, "pipe", "p", true, "Read Terraform plan from pipe")
 	TFCmd.Flags().StringVarP(&readString, "from-string", "s", "", "Read Terraform plan from string")
 }
 
 func terraformHandler() {
-	// planResult := parseTerraformPlan()
-	// fmt.Println(planResult)
 	handlePlanResult()
 }
