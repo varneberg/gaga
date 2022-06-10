@@ -2,6 +2,7 @@ name: release
 on:
   push:
     # run only against tags
+    branches: [main]
     tags:
       - "v[0-9]+.[0-9]+.[0-9]"
 
@@ -25,7 +26,7 @@ jobs:
         run: git fetch --force --tags
       -
         name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: 1.18
       -
