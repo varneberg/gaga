@@ -37,9 +37,6 @@ jobs:
       
       - name: main.go
         run: |
-          go run main.go label -n label/red
-          go run main.go label -n label/blue
-          go run main.go label -r -n label/red
-          go run main.go label -n label/orange -c D93F0B -d "This is an orange label"
+          go run main.go label -n test-label
         env:
           GITHUB_TOKEN: ${{ github.token }}
