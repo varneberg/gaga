@@ -23,4 +23,4 @@ archives:
     windows: 'windows'
     386: "i386"
     amd64: "amd64"
-  name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
