@@ -18,8 +18,6 @@ type newLabel struct {
 	Color       string `json:"color,omitempty"`
 }
 
-func updateLabel() {}
-
 func parseLabelName(labelName string) []byte {
 	var body, err = json.Marshal(map[string][]string{
 		"labels": toList(labelName),
@@ -45,8 +43,6 @@ type labelResp struct {
 func GetRepoLabels() []labelResp {
 	url := requests.GetRepoUrl()
 	_, body := requests.SendRequest("GET", url, nil)
-	//body := requestBodyuests.ResponseBody(response)
-	//requests.CloseRequest(response)
 
 	var lresp []labelResp
 	jsonErr := json.Unmarshal(body, &lresp)
@@ -73,10 +69,6 @@ func AddLabelPR(labelName string) {
 	body := parseLabelName(labelName)
 	fmt.Println("Api Request Body: ", string(body))
 	status, resp := requests.SendRequest("POST", url, body)
-	//fmt.Println(requests.ResponseStatus(response))
-	//fmt.Println(string(requests.ResponseBody(response)))
-	//requests.CloseRequest(response)
-	//fmt.Println(status, "\n", string(resp))
 	requests.PrintResponse(status, resp)
 }
 
@@ -97,9 +89,7 @@ func removeLabel(labelName string) {
 // Remove all labels from a pull request
 func removeAllLabels() {
 	url := requests.GetPRUrl()
-	//var body []byte
 	status, body := requests.SendRequest("DELETE", url, nil)
-	//fmt.Println(status, "\n", string(body))
 	requests.PrintResponse(status, body)
 }
 
@@ -132,10 +122,7 @@ var LabelCmd = &cobra.Command{
 	Use:   "label [label]",
 	Short: "Label a pull request",
 	Long:  `label is for labeling a pull request.`,
-	//Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		//fmt.Println(strings.Join(args, " "))
-		//LabelHandler(strings.Join(args, " "))
 		LabelHandler()
 	},
 }
@@ -158,9 +145,7 @@ func LabelHandler() {
 	}
 
 	// If color nor description is specified
-
 	if labelColor == "" && labelDescription == "" {
-		//fmt.Println("Color and description not set")
 		AddLabelPR(labelName)
 		return
 	}
@@ -171,19 +156,4 @@ func LabelHandler() {
 	}
 	createNewLabel(newLabel)
 	fmt.Println("newLabel: ", newLabel)
-	//addNewLabelRepo(newLabel)
-
-	//tail := flag.Args()
-	//fmt.Printf("Tail: %+q\n", tail)
-
-	//if newLabel.Description == "" {
-	//	fmt.Println("No description")
-	//}
-
-	//fmt.Println("labelName: ", labelName)
-	////fmt.Println("labelNewName: ", *labelNewName)
-	//fmt.Println("labelDesc: ", *labelDesc)
-	//fmt.Println("labelColor: ", *labelColor)
-	//fmt.Println()
-	//addLabelPR(newLabel)
 }

@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/varneberg/gaga/labels"
-
-	//"github.com/varneberg/gaga/labels"
 	"os"
 )
 

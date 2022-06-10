@@ -33,31 +33,6 @@ func ReadPipeInput() string {
 			log.Fatal(err)
 		}
 	}
-	//fmt.Println("Bytes:", nBytes, "Chunks:", nChunks)
 	return out
 }
 
-//func ParseTerraformPlan() {
-//	s := "Plan: 9 to add, 0 to change, 0 to destroy."
-//	match, err := regexp.MatchString("Plan:", s)
-//	fmt.Println(match, err)
-//
-//tfplan := ReadPipeInput()
-//fmt.Println(tfplan)
-
-//toSlice := strings.Split(tfplan, "\n")
-//fmt.Println(toSlice)
-// fmt.Println(toSlice)
-// 	// found := false
-
-// 	// var out []string
-// 	for i, line := range toSlice{
-// 		// Separator used in Terraform plan
-// 		if strings.Contains(line, "─────────────────────────────────────────────────────────────────────────────"){
-// 			fmt.Println(toSlice[i+1:len(toSlice)-4])
-// 			// fmt.Println(len(toSlice))
-// 			// fmt.Println(toSlice[777])
-// 			break
-// 		}
-// 	}
-//}
