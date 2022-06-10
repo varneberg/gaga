@@ -25,17 +25,19 @@ var (
 	ghAPIURL                     = os.Getenv("GITHUB_API_URL")
 )
 
+// Get URL of github repository
 func GetRepoUrl() string {
 	// https://api.github.com/repos/OWNER/REPO/labels
 	return ghAPIURL + "/repos/" + ghRepo + "/labels"
 }
 
+// Get URL of current github pull request
 func GetPRUrl() string {
 	prNumber := strings.Split(ghRefName, "/")[0]
 	return ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
 }
 
-// SendRequest Function for sending requests to the github API
+// SendRequest function for sending requests to the github API
 func SendRequest(requestMethod string, url string, requestBody []byte) (int, []byte) {
 	timeout := time.Duration(5 * time.Second)
 	client := &http.Client{
@@ -63,11 +65,6 @@ func SendRequest(requestMethod string, url string, requestBody []byte) (int, []b
 	}
 
 	statusCode := resp.StatusCode
-	//status := resp.Status
-	//fmt.Printf(string(body))
-	////fmt.Println()
-	////fmt.Println("Api Response: \n\t", resp.Status)
-	////fmt.Println("Response body: \n\t", string(body))
 	return statusCode, body
 }
 
@@ -79,10 +76,6 @@ func PrintResponse(status int, response []byte) {
 }
 
 func TestSendRequest(requestMethod string, url string, requestBody []byte) {
-	//timeout := time.Duration(5 * time.Second)
-	//client := &http.Client{
-	//	Timeout: timeout,
-	//}
 	request, err := http.NewRequest(requestMethod, url, bytes.NewBuffer(requestBody))
 	request.Header.Add("Accept", "application/vnd.github.v3+json")
 	request.Header.Add("Authorization", "token "+ghToken)

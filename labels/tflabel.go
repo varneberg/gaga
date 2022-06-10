@@ -14,37 +14,14 @@ var TFCmd = &cobra.Command{
 	Use:   "tflabel",
 	Short: "Labels from terraform plan",
 	Long:  `Add labels based on terraform plan from unix pipe.`,
-	//Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		terraformHandler()
 	},
 }
 
-type tfResult struct {
-	Details []string
-	Changes string
-}
-
-func parseTerraformPlan() tfResult {
-	tfplan := parser.ReadPipeInput()
-	toSlice := strings.Split(tfplan, "\n")
-	var out []string
-	for i, line := range toSlice {
-		// Separator used in Terraform plan
-		if strings.Contains(line, "─────────────────────────────────────────────────────────────────────────────") {
-			out = toSlice[i+1 : len(toSlice)-4]
-			break
-		}
-	}
-	var result tfResult
-	result.Changes = out[len(out)-1]
-	result.Details = out[:len(out)-1]
-	return result
-}
-
+// Read terraform pipe input and add corresponding labels to pull request 
 func getPlanResults() {
 	tfplan := parser.ReadPipeInput()
-	//s := "Plan: 9 to add, 0 to change, 0 to destroy."
 	re, err := regexp.Compile(`Plan: [\w] to add, [\w] to change, [\w] to destroy`)
 	if err != nil {
 		log.Fatalln(err)
@@ -60,7 +37,7 @@ func getPlanResults() {
 	for _, s := range split {
 		diff := string(s[0])
 		action := strings.Split(s, " ")[2]
-		if diff != "0" {
+		if diff != "0" { // Check if there are more than 0 changes
 			switch action {
 			case "add":
 				AddLabelPR(labelAddUpdate)
@@ -68,16 +45,11 @@ func getPlanResults() {
 				AddLabelPR(labelDestroy)
 			case "error":
 				AddLabelPR(labelError)
-
 			}
 		}
 	}
 }
 
-func handlePlanResult() {
-	getPlanResults()
-
-}
 
 var labelAddUpdate string
 var labelDestroy string
@@ -96,5 +68,5 @@ func init() {
 }
 
 func terraformHandler() {
-	handlePlanResult()
+	getPlanResults()
 }
