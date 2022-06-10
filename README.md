@@ -47,4 +47,5 @@ jobs:
       run: gaga label -n newLabel
       env:
         GITHUB_TOKEN: ${{ github.token }}
+
 ```
