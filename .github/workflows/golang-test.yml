@@ -16,7 +16,7 @@ permissions:
   issues: write
 
 env:
-  golang_version: '1.17.8'
+  golang_version: '1.18.3'
 
 jobs:
   golang: 
