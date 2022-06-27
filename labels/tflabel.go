@@ -25,7 +25,12 @@ var TFCmd = &cobra.Command{
 		** 
 	*/
 func getPlanResults() {
-	tfplan := parser.ReadPipeInput()
+	var tfplan string
+	if readFile != ""{
+		tfplan = parser.ReadFileInput(readFile)
+	} else {
+		tfplan = parser.ReadPipeInput()
+	}
 
 	if outputPipe {
 		parser.WritePipeOutput(tfplan)
