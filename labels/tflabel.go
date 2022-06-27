@@ -27,6 +27,9 @@ var TFCmd = &cobra.Command{
 func getPlanResults() {
 	tfplan := parser.ReadPipeInput()
 
+	if outputPipe {
+		parser.WritePipeOutput(tfplan)
+	}
 	re, err := regexp.Compile(`Plan: [\w] to add, [\w] to change, [\w] to destroy`)
 	if err != nil {
 		log.Fatalln(err)
@@ -52,9 +55,6 @@ func getPlanResults() {
 				AddLabelPR(labelError)
 			}
 		}
-	}
-	if outputPipe {
-		parser.WritePipeOutput(tfplan)
 	}
 }
 
