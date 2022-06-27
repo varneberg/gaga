@@ -53,7 +53,6 @@ func getPlanResults() {
 			}
 		}
 	}
-
 	if outputPipe {
 		parser.WritePipeOutput(tfplan)
 	}

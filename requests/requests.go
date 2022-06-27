@@ -56,6 +56,7 @@ func SendRequest(requestMethod string, url string, requestBody []byte) (int, []b
 	resp, err := client.Do(request)
 	if err != nil {
 		log.Fatalln(err)
+		
 	}
 	defer resp.Body.Close()
 
