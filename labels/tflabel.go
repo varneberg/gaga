@@ -1,7 +1,7 @@
 package labels
 
 import (
-	"fmt"
+	// "fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -22,6 +22,7 @@ var TFCmd = &cobra.Command{
 // Read terraform pipe input and add corresponding labels to pull request 
 func getPlanResults() {
 	tfplan := parser.ReadPipeInput()
+
 	re, err := regexp.Compile(`Plan: [\w] to add, [\w] to change, [\w] to destroy`)
 	if err != nil {
 		log.Fatalln(err)
@@ -33,7 +34,7 @@ func getPlanResults() {
 	}
 	parsed := strings.Trim(newChanges, "Plan: ")
 	split := strings.Split(parsed, ", ")
-	fmt.Println(split)
+	//fmt.Println(split)
 	for _, s := range split {
 		diff := string(s[0])
 		action := strings.Split(s, " ")[2]
@@ -48,7 +49,12 @@ func getPlanResults() {
 			}
 		}
 	}
+
+	if outputPipe {
+		parser.WritePipeOutput(tfplan)
+	}
 }
+
 
 
 var labelAddUpdate string
@@ -56,6 +62,7 @@ var labelDestroy string
 var labelNoChanges string
 var labelError string
 var readString string
+var outputPipe bool
 
 func init() {
 	// Specifyable labels based on output from terraform plan, with defaults
@@ -65,6 +72,7 @@ func init() {
 	TFCmd.Flags().StringVarP(&labelError, "label-error", "e", "tf/error", "Terraform error label name")
 
 	TFCmd.Flags().StringVarP(&readString, "from-string", "s", "", "Read Terraform plan from string")
+	TFCmd.Flags().BoolVarP(&outputPipe, "out", "o", false, "Output terraform plan as std.out")
 }
 
 func terraformHandler() {

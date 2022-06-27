@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -36,3 +37,7 @@ func ReadPipeInput() string {
 	return out
 }
 
+func WritePipeOutput(plan string) {
+	fmt.Println(plan)
+
+}
