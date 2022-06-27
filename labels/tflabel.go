@@ -20,6 +20,10 @@ var TFCmd = &cobra.Command{
 }
 
 // Read terraform pipe input and add corresponding labels to pull request 
+	/* TODO: 
+		**	Read plan from file
+		** 
+	*/
 func getPlanResults() {
 	tfplan := parser.ReadPipeInput()
 
@@ -55,24 +59,27 @@ func getPlanResults() {
 	}
 }
 
-
-
 var labelAddUpdate string
 var labelDestroy string
 var labelNoChanges string
 var labelError string
 var readString string
+var readFile string
 var outputPipe bool
 
 func init() {
-	// Specifyable labels based on output from terraform plan, with defaults
+	// Customizeable labels based on output from terraform plan, with defaults
 	TFCmd.Flags().StringVarP(&labelAddUpdate, "label-add", "a", "tf/add-update", "Terraform Add/Update label name")
 	TFCmd.Flags().StringVarP(&labelDestroy, "label-destroy", "d", "tf/destroy", "Terraform destroy label name")
 	TFCmd.Flags().StringVarP(&labelNoChanges, "label-no-changes", "n", "tf/no-changes", "Terraform no changes label name")
 	TFCmd.Flags().StringVarP(&labelError, "label-error", "e", "tf/error", "Terraform error label name")
 
+	// Terraform plan input source
+	TFCmd.Flags().StringVarP(&readFile, "from-file", "f", "", "Read Terraform plan from file") // TODO
 	TFCmd.Flags().StringVarP(&readString, "from-string", "s", "", "Read Terraform plan from string")
-	TFCmd.Flags().BoolVarP(&outputPipe, "out", "o", false, "Output terraform plan as std.out")
+
+	// Terraform plan output
+	TFCmd.Flags().BoolVarP(&outputPipe, "out", "o", false, "Output Terraform plan as std.out")
 }
 
 func terraformHandler() {

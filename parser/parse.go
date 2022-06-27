@@ -41,3 +41,26 @@ func WritePipeOutput(plan string) {
 	fmt.Println(plan)
 
 }
+
+func ReadFileInput(filename string) string{
+	file, err := os.Open(filename)
+	if err != nil {
+		fmt.Println("Error openening file")
+	}
+	defer file.Close()
+
+	var out string
+	const maxS = 4
+	buf := make([]byte, maxS)
+	for  {
+		n, err := file.Read(buf)
+		if err != nil {
+			if err != io.EOF {
+				fmt.Println(err)
+			}
+			break
+		}
+		out += string(buf[:n])
+	}
+	return out
+}
