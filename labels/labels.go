@@ -2,7 +2,7 @@ package labels
 
 import (
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"github.com/spf13/cobra"
 	"github.com/varneberg/gaga/requests"
 	"log"
@@ -67,9 +67,10 @@ func labelExists(labelName string) bool {
 func AddLabelPR(labelName string) {
 	url := requests.GetPRUrl()
 	body := parseLabelName(labelName)
-	fmt.Println("Api Request Body: ", string(body))
+	//fmt.Println("Api Request Body: ", string(body))
 	status, resp := requests.SendRequest("POST", url, body)
-	requests.PrintResponse(status, resp)
+	// requests.PrintResponse(status, resp)
+	requests.CheckRespError(status, resp)
 }
 
 func toList(inputString string) []string {
@@ -83,14 +84,16 @@ func removeLabel(labelName string) {
 	//var body []byte
 	body := parseLabelName(labelName)
 	status, body := requests.SendRequest("DELETE", url, body)
-	requests.PrintResponse(status, body)
+	// requests.PrintResponse(status, body)
+	requests.CheckRespError(status, body)
 }
 
 // Remove all labels from a pull request
 func removeAllLabels() {
 	url := requests.GetPRUrl()
 	status, body := requests.SendRequest("DELETE", url, nil)
-	requests.PrintResponse(status, body)
+	// requests.PrintResponse(status, body)
+	requests.CheckRespError(status, body)
 }
 
 func createNewLabel(label newLabel) {
@@ -108,7 +111,8 @@ func createNewLabel(label newLabel) {
 		log.Fatalln(err)
 	}
 	status, respbody := requests.SendRequest("POST", url, body)
-	requests.PrintResponse(status, respbody)
+	// requests.PrintResponse(status, respbody)
+	requests.CheckRespError(status, respbody)
 	AddLabelPR(label.Name)
 }
 
@@ -155,5 +159,5 @@ func LabelHandler() {
 		Color:       labelColor,
 	}
 	createNewLabel(newLabel)
-	fmt.Println("newLabel: ", newLabel)
+	//fmt.Println("newLabel: ", newLabel)
 }

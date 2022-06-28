@@ -56,6 +56,7 @@ func SendRequest(requestMethod string, url string, requestBody []byte) (int, []b
 	resp, err := client.Do(request)
 	if err != nil {
 		log.Fatalln(err)
+		
 	}
 	defer resp.Body.Close()
 
@@ -67,6 +68,8 @@ func SendRequest(requestMethod string, url string, requestBody []byte) (int, []b
 	statusCode := resp.StatusCode
 	return statusCode, body
 }
+
+func CheckRespError(respCode int, respBody []byte){}
 
 func PrintResponse(status int, response []byte) {
 	fmt.Println(">> ", status)
