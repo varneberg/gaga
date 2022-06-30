@@ -1,4 +1,4 @@
-name: Test Scripts
+name: gaga test
 
 on:
   push:
@@ -37,6 +37,6 @@ jobs:
       
       - name: main.go
         run: |
-          go run main.go label -n test-label
+          go run main.go label -n new-label
         env:
           GITHUB_TOKEN: ${{ github.token }}
