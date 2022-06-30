@@ -8,6 +8,12 @@ import (
 	"os"
 )
 
+// Detect if input to program is from a Unix pipe
+func IsInputFromPipe() bool {
+	fileInfo, _ := os.Stdin.Stat()
+	return fileInfo.Mode() & os.ModeCharDevice == 0
+}
+
 // Read unix pipe
 func ReadPipeInput() string {
 	nBytes, nChunks := int64(0), int64(0)
@@ -38,7 +44,8 @@ func ReadPipeInput() string {
 }
 
 func WritePipeOutput(plan string) {
-	fmt.Println(plan)
+	// fmt.Println(plan)
+	fmt.Fprint(os.Stdout, plan)
 
 }
 

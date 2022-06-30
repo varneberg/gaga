@@ -12,17 +12,17 @@ import (
 )
 
 var (
-	ghRepoOwner                  = os.Getenv("GITHUB_REPOSITORY_OWNER")
-	ghRef                        = os.Getenv("GITHUB_REF")
 	ghRefName                    = os.Getenv("GITHUB_REF_NAME")
 	ghRepo                       = os.Getenv("GITHUB_REPOSITORY")
 	ghToken                      = os.Getenv("GITHUB_TOKEN")
-	ghEvent                      = os.Getenv("GITHUB_EVENT_NAME")
-	ghActor                      = os.Getenv("GITHUB_ACTOR")
-	ghWorkflow                   = os.Getenv("GITHUB_WORKFLOW")
-	ghActionsIDTokenRequestURL   = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
-	ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
 	ghAPIURL                     = os.Getenv("GITHUB_API_URL")
+	// ghRepoOwner                  = os.Getenv("GITHUB_REPOSITORY_OWNER")
+	// ghRef                        = os.Getenv("GITHUB_REF")
+	// ghEvent                      = os.Getenv("GITHUB_EVENT_NAME")
+	// ghActor                      = os.Getenv("GITHUB_ACTOR")
+	// ghWorkflow                   = os.Getenv("GITHUB_WORKFLOW")
+	// ghActionsIDTokenRequestURL   = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
+	// ghActionsIDTokenRequestToken = os.Getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
 )
 
 // Get URL of github repository
