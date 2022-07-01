@@ -31,12 +31,14 @@ jobs:
           wget https://dl.google.com/go/go${{ env.golang_version }}.linux-amd64.tar.gz
           sudo tar -C /usr/local/ -xzf go${{ env.golang_version }}.linux-amd64.tar.gz
           export PATH=$PATH:/usr/local/go/bin
+          go build
 
       - name: go version
         run: go version
       
       - name: main.go
         run: |
-          go run main.go label -n new-label
+          ./gaga label -n new-label
+          ./gaga comment -n "This is a test comment"
         env:
           GITHUB_TOKEN: ${{ github.token }}

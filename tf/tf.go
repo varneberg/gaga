@@ -1,4 +1,4 @@
-package labels
+package tf
 
 import (
 	// "fmt"
@@ -7,21 +7,23 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/varneberg/gaga/comments"
+	"github.com/varneberg/gaga/labels"
 	"github.com/varneberg/gaga/parser"
 )
 
 var TFCmd = &cobra.Command{
 	Use:   "tflabel",
 	Short: "Labels from terraform plan",
-	Long:  `Add labels based on terraform plan from unix pipe.`,
+	Long:  `Add labels based on terraform plan (Default: UNIX pipe).`,
 	Run: func(cmd *cobra.Command, args []string) {
 		terraformHandler()
 	},
 }
 
-func getPlanInput() string{
+func getPlanInput() string {
 	var tfplan string
-	if parser.IsInputFromPipe(){
+	if parser.IsInputFromPipe() {
 		tfplan = parser.ReadPipeInput()
 	} else {
 		tfplan = parser.ReadFileInput(readFile)
@@ -29,7 +31,7 @@ func getPlanInput() string{
 	return tfplan
 }
 
-func parsePlan(tfplan string) string{
+func parsePlan(tfplan string) string {
 	re, err := regexp.Compile(`Plan: [\w] to add, [\w] to change, [\w] to destroy`)
 	if err != nil {
 		log.Fatalln(err)
@@ -38,7 +40,15 @@ func parsePlan(tfplan string) string{
 
 }
 
-// Read terraform pipe input and add corresponding labels to pull request 
+// Comment terraform plan on pull request
+func commentPlan(planResult string){
+	if commentPlanFlag{
+		comments.PostComment(planResult)
+	}
+
+}
+
+// Read terraform pipe input and add corresponding labels to pull request
 func getPlanResults() {
 	tfplan := getPlanInput()
 
@@ -47,7 +57,7 @@ func getPlanResults() {
 	}
 	newChanges := parsePlan(tfplan)
 	if newChanges == "" {
-		AddLabelPR(labelNoChanges)
+		labels.PostLabelPR(labelNoChanges)
 		return
 	}
 	parsed := strings.Trim(newChanges, "Plan: ")
@@ -59,23 +69,26 @@ func getPlanResults() {
 		if diff != "0" { // Check if there are more than 0 changes
 			switch action {
 			case "add":
-				AddLabelPR(labelAddUpdate)
+				labels.PostLabelPR(labelAddUpdate)
 			case "destroy":
-				AddLabelPR(labelDestroy)
+				labels.PostLabelPR(labelDestroy)
 			case "error":
-				AddLabelPR(labelError)
+				labels.PostLabelPR(labelError)
 			}
 		}
 	}
+	commentPlan(tfplan)
 }
 
 var labelAddUpdate string
 var labelDestroy string
 var labelNoChanges string
 var labelError string
+
 // var readString string
 var readFile string
 var outPipeFlag bool
+var commentPlanFlag bool
 
 func init() {
 	// Customizeable labels based on output from terraform plan, with defaults
@@ -90,6 +103,7 @@ func init() {
 
 	// Terraform plan output
 	TFCmd.Flags().BoolVarP(&outPipeFlag, "out", "o", false, "Output Terraform plan as std.out")
+	TFCmd.Flags().BoolVarP(&commentPlanFlag, "comment", "c", false, "Comment plan result on pull request")
 }
 
 func terraformHandler() {

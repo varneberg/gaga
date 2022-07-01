@@ -3,8 +3,9 @@ package labels
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/varneberg/gaga/requests"
 	"log"
+
+	"github.com/varneberg/gaga/requests"
 )
 
 // colors
@@ -48,7 +49,7 @@ func TestLabelExists(labelName string) bool {
 }
 
 func TestAddLabelPR(labelName string) {
-	url := requests.GetPRUrl()
+	url := requests.GetLabelUrl()
 	body := parseLabelName(labelName)
 	fmt.Println("Api Request body: \n\t", string(body))
 	requests.TestSendRequest("POST", url, body)

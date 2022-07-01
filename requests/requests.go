@@ -12,10 +12,10 @@ import (
 )
 
 var (
-	ghRefName                    = os.Getenv("GITHUB_REF_NAME")
-	ghRepo                       = os.Getenv("GITHUB_REPOSITORY")
-	ghToken                      = os.Getenv("GITHUB_TOKEN")
-	ghAPIURL                     = os.Getenv("GITHUB_API_URL")
+	ghRefName = os.Getenv("GITHUB_REF_NAME")
+	ghRepo    = os.Getenv("GITHUB_REPOSITORY")
+	ghToken   = os.Getenv("GITHUB_TOKEN")
+	ghAPIURL  = os.Getenv("GITHUB_API_URL")
 	// ghRepoOwner                  = os.Getenv("GITHUB_REPOSITORY_OWNER")
 	// ghRef                        = os.Getenv("GITHUB_REF")
 	// ghEvent                      = os.Getenv("GITHUB_EVENT_NAME")
@@ -31,10 +31,15 @@ func GetRepoUrl() string {
 	return ghAPIURL + "/repos/" + ghRepo + "/labels"
 }
 
-// Get URL of current github pull request
-func GetPRUrl() string {
+// Get URL for labeling current pull request
+func GetLabelUrl() string {
 	prNumber := strings.Split(ghRefName, "/")[0]
 	return ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
+}
+
+func GetPrURL() string{
+	prNumber := strings.Split(ghRefName, "/")[0]
+	return ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber
 }
 
 // SendRequest function for sending requests to the github API
@@ -56,7 +61,7 @@ func SendRequest(requestMethod string, url string, requestBody []byte) (int, []b
 	resp, err := client.Do(request)
 	if err != nil {
 		log.Fatalln(err)
-		
+
 	}
 	defer resp.Body.Close()
 
@@ -69,7 +74,7 @@ func SendRequest(requestMethod string, url string, requestBody []byte) (int, []b
 	return statusCode, body
 }
 
-func CheckRespError(respCode int, respBody []byte){}
+func CheckRespError(respCode int, respBody []byte) {}
 
 func PrintResponse(status int, response []byte) {
 	fmt.Println(">> ", status)
