@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/varneberg/gaga/comments"
+	"github.com/varneberg/gaga/tf"
 	"github.com/varneberg/gaga/labels"
 )
 
@@ -21,9 +22,10 @@ func init() {}
 
 func main() {
 	checkArgs()
-	var rootCmd = &cobra.Command{Use: "app"}
+	
+	var rootCmd = &cobra.Command{Use: "gaga"}
 	rootCmd.AddCommand(labels.LabelCmd)
-	rootCmd.AddCommand(labels.TFCmd)
+	rootCmd.AddCommand(tf.TFCmd)
 	rootCmd.AddCommand(comments.CommentCmd)
 	rootCmd.Execute()
 
