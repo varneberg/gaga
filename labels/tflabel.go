@@ -19,9 +19,9 @@ var TFCmd = &cobra.Command{
 	},
 }
 
-func getPlanInput() string{
+func getPlanInput() string {
 	var tfplan string
-	if parser.IsInputFromPipe(){
+	if parser.IsInputFromPipe() {
 		tfplan = parser.ReadPipeInput()
 	} else {
 		tfplan = parser.ReadFileInput(readFile)
@@ -29,7 +29,7 @@ func getPlanInput() string{
 	return tfplan
 }
 
-func parsePlan(tfplan string) string{
+func parsePlan(tfplan string) string {
 	re, err := regexp.Compile(`Plan: [\w] to add, [\w] to change, [\w] to destroy`)
 	if err != nil {
 		log.Fatalln(err)
@@ -38,7 +38,7 @@ func parsePlan(tfplan string) string{
 
 }
 
-// Read terraform pipe input and add corresponding labels to pull request 
+// Read terraform pipe input and add corresponding labels to pull request
 func getPlanResults() {
 	tfplan := getPlanInput()
 
@@ -47,7 +47,7 @@ func getPlanResults() {
 	}
 	newChanges := parsePlan(tfplan)
 	if newChanges == "" {
-		AddLabelPR(labelNoChanges)
+		PostLabelPR(labelNoChanges)
 		return
 	}
 	parsed := strings.Trim(newChanges, "Plan: ")
@@ -59,11 +59,11 @@ func getPlanResults() {
 		if diff != "0" { // Check if there are more than 0 changes
 			switch action {
 			case "add":
-				AddLabelPR(labelAddUpdate)
+				PostLabelPR(labelAddUpdate)
 			case "destroy":
-				AddLabelPR(labelDestroy)
+				PostLabelPR(labelDestroy)
 			case "error":
-				AddLabelPR(labelError)
+				PostLabelPR(labelError)
 			}
 		}
 	}
@@ -73,6 +73,7 @@ var labelAddUpdate string
 var labelDestroy string
 var labelNoChanges string
 var labelError string
+
 // var readString string
 var readFile string
 var outPipeFlag bool

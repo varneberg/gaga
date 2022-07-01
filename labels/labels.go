@@ -3,9 +3,10 @@ package labels
 import (
 	"encoding/json"
 	// "fmt"
+	"log"
+
 	"github.com/spf13/cobra"
 	"github.com/varneberg/gaga/requests"
-	"log"
 )
 
 // colors
@@ -53,7 +54,7 @@ func GetRepoLabels() []labelResp {
 }
 
 // Check if label already exist in repository
-func labelExists(labelName string) bool {
+func isLabel(labelName string) bool {
 	labels := GetRepoLabels()
 	for _, elem := range labels {
 		if labelName == elem.Name {
@@ -64,8 +65,8 @@ func labelExists(labelName string) bool {
 }
 
 // Adds labels to current pull request
-func AddLabelPR(labelName string) {
-	url := requests.GetPRUrl()
+func PostLabelPR(labelName string) {
+	url := requests.GetLabelUrl()
 	body := parseLabelName(labelName)
 	//fmt.Println("Api Request Body: ", string(body))
 	status, resp := requests.SendRequest("POST", url, body)
@@ -80,7 +81,7 @@ func toList(inputString string) []string {
 }
 
 func removeLabel(labelName string) {
-	url := requests.GetPRUrl()
+	url := requests.GetLabelUrl()
 	//var body []byte
 	body := parseLabelName(labelName)
 	status, body := requests.SendRequest("DELETE", url, body)
@@ -90,15 +91,15 @@ func removeLabel(labelName string) {
 
 // Remove all labels from a pull request
 func removeAllLabels() {
-	url := requests.GetPRUrl()
+	url := requests.GetLabelUrl()
 	status, body := requests.SendRequest("DELETE", url, nil)
 	// requests.PrintResponse(status, body)
 	requests.CheckRespError(status, body)
 }
 
 func createNewLabel(label newLabel) {
-	if labelExists(label.Name) {
-		AddLabelPR(label.Name)
+	if isLabel(label.Name) {
+		PostLabelPR(label.Name)
 		return
 	}
 	url := requests.GetRepoUrl()
@@ -113,7 +114,7 @@ func createNewLabel(label newLabel) {
 	status, respbody := requests.SendRequest("POST", url, body)
 	// requests.PrintResponse(status, respbody)
 	requests.CheckRespError(status, respbody)
-	AddLabelPR(label.Name)
+	PostLabelPR(label.Name)
 }
 
 var labelName string
@@ -150,7 +151,7 @@ func LabelHandler() {
 
 	// If color nor description is specified
 	if labelColor == "" && labelDescription == "" {
-		AddLabelPR(labelName)
+		PostLabelPR(labelName)
 		return
 	}
 	newLabel := newLabel{
