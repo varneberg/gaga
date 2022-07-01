@@ -13,7 +13,7 @@ import (
 var TFCmd = &cobra.Command{
 	Use:   "tflabel",
 	Short: "Labels from terraform plan",
-	Long:  `Add labels based on terraform plan from unix pipe.`,
+	Long:  `Add labels based on terraform plan (Default: UNIX pipe).`,
 	Run: func(cmd *cobra.Command, args []string) {
 		terraformHandler()
 	},

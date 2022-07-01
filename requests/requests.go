@@ -31,10 +31,15 @@ func GetRepoUrl() string {
 	return ghAPIURL + "/repos/" + ghRepo + "/labels"
 }
 
-// Get URL of current github pull request
+// Get URL for labeling current pull request
 func GetLabelUrl() string {
 	prNumber := strings.Split(ghRefName, "/")[0]
 	return ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber + "/labels"
+}
+
+func GetPrURL() string{
+	prNumber := strings.Split(ghRefName, "/")[0]
+	return ghAPIURL + "/repos/" + ghRepo + "/issues/" + prNumber
 }
 
 // SendRequest function for sending requests to the github API
