@@ -18,6 +18,12 @@ var CommentCmd = &cobra.Command{
 	},
 }
 
+func ToMarkdown(title string, body string) string{
+	
+	mdComment := "## " + title + "\n" + body
+	return mdComment
+}
+
 func parseComment(comment string) []byte {
 	var body, err = json.Marshal(map[string]string{
 		"body": comment,
@@ -31,7 +37,6 @@ func parseComment(comment string) []byte {
 func PostComment(comment string){
 	body := parseComment(comment)
 	requests.SendRequest("POST", requests.GetPrURL()+"/comments", body)
-
 }
 
 var comment string
@@ -45,6 +50,4 @@ func commentHandler(){
 		return
 	}
 	PostComment(comment)
-
-
 }

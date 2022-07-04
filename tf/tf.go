@@ -2,6 +2,7 @@ package tf
 
 import (
 	// "fmt"
+	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -42,15 +43,16 @@ func parsePlan(tfplan string) string {
 
 // Comment terraform plan on pull request
 func commentPlan(planResult string){
+	mdComment := comments.ToMarkdown("Test title",planResult)
+	fmt.Println(mdComment)
 	if commentPlanFlag{
 		comments.PostComment(planResult)
 	}
-
 }
 
 // Read terraform pipe input and add corresponding labels to pull request
-func getPlanResults() {
-	tfplan := getPlanInput()
+func getPlanLabels(tfplan string) {
+	// tfplan := getPlanInput()
 
 	if outPipeFlag {
 		parser.WritePipeOutput(tfplan)
@@ -77,8 +79,9 @@ func getPlanResults() {
 			}
 		}
 	}
-	commentPlan(tfplan)
+	// commentPlan(tfplan)
 }
+
 
 var labelAddUpdate string
 var labelDestroy string
@@ -107,5 +110,7 @@ func init() {
 }
 
 func terraformHandler() {
-	getPlanResults()
+	tfplan := getPlanInput()
+	commentPlan(tfplan)
+	getPlanLabels(tfplan)
 }
