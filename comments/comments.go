@@ -2,9 +2,7 @@ package comments
 
 import (
 	"encoding/json"
-	// "fmt"
 	"log"
-
 	"github.com/spf13/cobra"
 	"github.com/varneberg/gaga/requests"
 )
@@ -40,14 +38,17 @@ func PostComment(comment string){
 }
 
 var comment string
+var title string
 
 func init() {
 	CommentCmd.Flags().StringVarP(&comment, "new-comment", "n", "", "New comment on Pull Request")
+	CommentCmd.Flags().StringVarP(&title, "title", "t", "", "Comment title (markdown)")
 }
 
 func commentHandler(){
 	if comment == ""{
 		return
 	}
-	PostComment(comment)
+	mdComment := ToMarkdown(title, comment)
+	PostComment(mdComment)
 }
