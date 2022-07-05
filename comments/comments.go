@@ -2,9 +2,7 @@ package comments
 
 import (
 	"encoding/json"
-	// "fmt"
 	"log"
-
 	"github.com/spf13/cobra"
 	"github.com/varneberg/gaga/requests"
 )
@@ -16,6 +14,12 @@ var CommentCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		commentHandler()
 	},
+}
+
+func ToMarkdown(title string, body string) string{
+	
+	mdComment := "## " + title + "\n" + body
+	return mdComment
 }
 
 func parseComment(comment string) []byte {
@@ -31,20 +35,20 @@ func parseComment(comment string) []byte {
 func PostComment(comment string){
 	body := parseComment(comment)
 	requests.SendRequest("POST", requests.GetPrURL()+"/comments", body)
-
 }
 
 var comment string
+var title string
 
 func init() {
 	CommentCmd.Flags().StringVarP(&comment, "new-comment", "n", "", "New comment on Pull Request")
+	CommentCmd.Flags().StringVarP(&title, "title", "t", "", "Comment title (markdown)")
 }
 
 func commentHandler(){
 	if comment == ""{
 		return
 	}
-	PostComment(comment)
-
-
+	mdComment := ToMarkdown(title, comment)
+	PostComment(mdComment)
 }

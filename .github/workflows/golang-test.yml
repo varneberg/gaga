@@ -39,6 +39,6 @@ jobs:
       - name: main.go
         run: |
           ./gaga label -n new-label
-          ./gaga comment -n "This is a test comment"
+          ./gaga comment -n "This is a test comment" -t "This is a title"
         env:
           GITHUB_TOKEN: ${{ github.token }}
