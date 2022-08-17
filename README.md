@@ -1,4 +1,4 @@
-# Gaga
+# Github Actions Automator
 ## Motivation
 Gaga is a CLI-tool for adding labeling within github actions. Authentication is done within the workflow step, making gaga being authenticated with the same permissions as the Workflow it is called from.
 
